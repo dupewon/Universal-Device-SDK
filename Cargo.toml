@@ -40,11 +40,8 @@ anyhow = "1"
 toml = "0.8"
 indicatif = "0.17"
 mockall = "0.13"
-uuid = { version = "1", features = ["v4"] }
 sha2 = "0.10"
 chrono = { version = "0.4", features = ["serde"] }
-futures = "0.3"
 futures-util = "0.3"
-socket2 = "0.5"
 rand = "0.8"
 dirs = "5"
