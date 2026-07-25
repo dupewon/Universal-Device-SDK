@@ -37,7 +37,7 @@ pub struct ProfileConfig {
     pub device: Option<String>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct UdsConfig {
     #[serde(default)]
     pub global: GlobalConfig,
@@ -47,14 +47,4 @@ pub struct UdsConfig {
 
     #[serde(default)]
     pub profiles: std::collections::HashMap<String, ProfileConfig>,
-}
-
-impl Default for UdsConfig {
-    fn default() -> Self {
-        Self {
-            global: GlobalConfig::default(),
-            devices: std::collections::HashMap::new(),
-            profiles: std::collections::HashMap::new(),
-        }
-    }
 }

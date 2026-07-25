@@ -118,6 +118,12 @@ impl TransportConnection for UdpConnection {
 #[derive(Debug)]
 pub struct UdpTransport;
 
+impl Default for UdpTransport {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl UdpTransport {
     pub fn new() -> Self {
         Self
@@ -139,14 +145,9 @@ impl UdpTransport {
 
         let mut buf = vec![0u8; 1024];
         let mut devices = Vec::new();
-        loop {
-            match socket.recv_from(&mut buf) {
-                Ok((n, src)) => {
-                    let response = String::from_utf8_lossy(&buf[..n]);
-                    devices.push(format!("{}: {}", src, response));
-                }
-                Err(_) => break,
-            }
+        while let Ok((n, src)) = socket.recv_from(&mut buf) {
+            let response = String::from_utf8_lossy(&buf[..n]);
+            devices.push(format!("{}: {}", src, response));
         }
         Ok(devices)
     }

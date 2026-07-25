@@ -10,6 +10,7 @@ description = "Client library for embedded targets. C/C++ headers and Rust wrapp
 uds-core = { path = "../uds-core" }
 uds-protocol = { path = "../uds-protocol" }
 bytes.workspace = true
+sha2.workspace = true
 
 [lib]
 crate-type = ["lib", "staticlib", "cdylib"]

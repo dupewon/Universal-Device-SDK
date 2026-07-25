@@ -11,22 +11,25 @@ pub mod exports {
 
     /// Validate a plugin's ABI version against the host.
     pub fn validate_abi_version(plugin_version: u32) -> Result<(), String> {
-        if plugin_version == UDS_PLUGIN_ABI_VERSION {
+        if plugin_version == super::UDS_PLUGIN_ABI_VERSION {
             Ok(())
-        } else if plugin_version > UDS_PLUGIN_ABI_VERSION {
+        } else if plugin_version > super::UDS_PLUGIN_ABI_VERSION {
             Err(format!(
                 "Plugin ABI v{} is newer than host ABI v{}",
-                plugin_version, UDS_PLUGIN_ABI_VERSION
+                plugin_version,
+                super::UDS_PLUGIN_ABI_VERSION
             ))
         } else {
             Err(format!(
                 "Plugin ABI v{} is too old. Host requires v{}",
-                plugin_version, UDS_PLUGIN_ABI_VERSION
+                plugin_version,
+                super::UDS_PLUGIN_ABI_VERSION
             ))
         }
     }
 
     /// Safely convert a C string pointer to a Rust string.
+    #[allow(clippy::not_unsafe_ptr_arg_deref)]
     pub fn c_str_to_string(ptr: *const std::os::raw::c_char) -> Result<String, String> {
         if ptr.is_null() {
             return Err("null pointer".into());

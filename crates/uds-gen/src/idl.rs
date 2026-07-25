@@ -33,6 +33,12 @@ pub struct FieldDef {
 
 pub struct IdlParser;
 
+impl Default for IdlParser {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl IdlParser {
     pub fn new() -> Self {
         Self
@@ -53,7 +59,7 @@ impl IdlParser {
         let mut current_service: Option<ServiceDef> = None;
         let mut current_message: Option<MessageDef> = None;
 
-        for (line_no, raw_line) in input.lines().enumerate() {
+        for raw_line in input.lines() {
             let line = raw_line.trim();
             if line.is_empty() || line.starts_with("//") || line.starts_with('#') {
                 continue;

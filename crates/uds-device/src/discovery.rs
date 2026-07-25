@@ -1,5 +1,4 @@
 use crate::traits::{DeviceDiscovery, DeviceError, DeviceEvent};
-use std::sync::mpsc;
 use std::time::Duration;
 use uds_core::{
     DeviceCapabilitySet, DeviceId, DeviceInfo, FeatureFlags, FirmwareCapabilities,
@@ -7,6 +6,12 @@ use uds_core::{
 };
 
 pub struct DiscoveryService;
+
+impl Default for DiscoveryService {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 
 impl DiscoveryService {
     pub fn new() -> Self {
@@ -75,6 +80,9 @@ impl DiscoveryService {
                         benchmarking: false,
                     },
                 },
+                connected: false,
+                platform: "ESP32".into(),
+                firmware_version: "0.1.0".into(),
             },
             DeviceInfo {
                 id: DeviceId("stm32-001".into()),
@@ -106,6 +114,9 @@ impl DiscoveryService {
                         benchmarking: false,
                     },
                 },
+                connected: false,
+                platform: "STM32".into(),
+                firmware_version: "0.1.0".into(),
             },
             DeviceInfo {
                 id: DeviceId("rp2040-001".into()),
@@ -137,6 +148,9 @@ impl DiscoveryService {
                         benchmarking: false,
                     },
                 },
+                connected: false,
+                platform: "RP2040".into(),
+                firmware_version: "0.1.0".into(),
             },
         ]
     }
@@ -186,6 +200,9 @@ impl DeviceDiscovery for DiscoveryService {
                                     benchmarking: false,
                                 },
                             },
+                            connected: false,
+                            platform: "unknown".into(),
+                            firmware_version: "unknown".into(),
                         })
                         .collect())
                 }

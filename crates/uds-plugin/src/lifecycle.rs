@@ -9,6 +9,12 @@ pub struct PluginLifecycle {
     state: PluginState,
 }
 
+impl Default for PluginLifecycle {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl PluginLifecycle {
     pub fn new() -> Self {
         Self {

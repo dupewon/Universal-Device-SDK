@@ -76,10 +76,10 @@ impl<T: FirmwareTransport> UdsClient<T> {
             MessageType::Request if msg.method.as_deref() == Some("ota_chunk") => {
                 self.ota.receive_chunk(0, &msg.payload);
             }
-            MessageType::Request if msg.method.as_deref() == Some("ota_commit") => {
-                if self.ota.verify() {
-                    self.ota.apply();
-                }
+            MessageType::Request
+                if msg.method.as_deref() == Some("ota_commit") && self.ota.verify() =>
+            {
+                self.ota.apply();
             }
             _ => {}
         }

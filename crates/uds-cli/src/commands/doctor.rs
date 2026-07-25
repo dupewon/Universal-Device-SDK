@@ -1,3 +1,5 @@
+use uds_transport::traits::Transport;
+
 pub fn run_doctor() -> anyhow::Result<()> {
     println!("UDS Diagnostics\n");
 

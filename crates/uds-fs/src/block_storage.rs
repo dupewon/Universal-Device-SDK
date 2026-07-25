@@ -1,5 +1,11 @@
 pub struct BlockStorage;
 
+impl Default for BlockStorage {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl BlockStorage {
     pub fn new() -> Self {
         Self

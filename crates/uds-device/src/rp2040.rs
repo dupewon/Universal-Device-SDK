@@ -1,5 +1,4 @@
 use crate::traits::{Device, DeviceError};
-use std::fmt;
 use uds_core::{
     DeviceCapabilitySet, DeviceId, DeviceInfo, DeviceStatus, FeatureFlags, FirmwareCapabilities,
     HardwareCapabilities, TransportHint, TransportType,

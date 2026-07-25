@@ -2,6 +2,12 @@ use crate::idl::IdlAst;
 
 pub struct SchemaGenerator;
 
+impl Default for SchemaGenerator {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl SchemaGenerator {
     pub fn new() -> Self {
         Self
@@ -44,7 +50,7 @@ impl SchemaGenerator {
         out
     }
 
-    fn type_to_protobuf(&self, t: &str) -> &str {
+    fn type_to_protobuf<'a>(&self, t: &'a str) -> &'a str {
         match t {
             "string" => "string",
             "uint32" => "uint32",
@@ -59,7 +65,7 @@ impl SchemaGenerator {
         }
     }
 
-    fn type_to_flatbuffers(&self, t: &str) -> &str {
+    fn type_to_flatbuffers<'a>(&self, t: &'a str) -> &'a str {
         match t {
             "string" => "string",
             "uint32" => "uint32",

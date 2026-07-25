@@ -7,6 +7,12 @@ pub struct PairingManager {
     paired: Mutex<HashMap<String, Vec<u8>>>, // device_id -> shared_key
 }
 
+impl Default for PairingManager {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl PairingManager {
     pub fn new() -> Self {
         Self {

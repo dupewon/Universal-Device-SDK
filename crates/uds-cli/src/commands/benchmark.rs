@@ -24,7 +24,7 @@ pub fn run_benchmark(kind: &str) -> anyhow::Result<()> {
             println!("  P50:     {:>7}µs", samples[samples.len() / 2].as_micros());
             println!();
         }
-        "throughput" | "all" => {
+        "throughput" => {
             if kind != "all" {
                 println!("--- Throughput Benchmark ---");
             }

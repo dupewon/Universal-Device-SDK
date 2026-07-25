@@ -1,13 +1,14 @@
 use std::sync::Arc;
+use uds_rpc::error::RpcError;
 use uds_rpc::message::RpcMessage;
-use uds_rpc::server::RpcServerImpl;
+use uds_rpc::server::{RpcServer, RpcServerImpl};
+
+type RpcHandler = Arc<dyn Fn(&[u8]) -> Result<Vec<u8>, RpcError> + Send + Sync>;
 
 pub fn run_rpc(method: &str, params: Option<&str>, _device_id: Option<&str>) -> anyhow::Result<()> {
     let server = RpcServerImpl::new();
 
-    let echo_handler: Arc<
-        dyn Fn(&[u8]) -> Result<Vec<u8>, uds_rpc::error::RpcError> + Send + Sync,
-    > = Arc::new(|p| Ok(p.to_vec()));
+    let echo_handler: RpcHandler = Arc::new(|p| Ok(p.to_vec()));
     server.register_method("echo", echo_handler);
 
     let params_bytes = params.map(|p| p.as_bytes().to_vec()).unwrap_or_default();

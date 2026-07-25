@@ -27,6 +27,12 @@ pub struct WebSocketConnection {
 #[derive(Debug)]
 pub struct WebSocketTransport;
 
+impl Default for WebSocketTransport {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl WebSocketTransport {
     pub fn new() -> Self {
         Self

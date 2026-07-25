@@ -4,6 +4,12 @@ pub struct LatencyBenchmark {
     samples: Vec<Duration>,
 }
 
+impl Default for LatencyBenchmark {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl LatencyBenchmark {
     pub fn new() -> Self {
         Self {

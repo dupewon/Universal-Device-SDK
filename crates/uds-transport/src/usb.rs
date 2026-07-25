@@ -1,5 +1,4 @@
 use crate::traits::{Transport, TransportConfig, TransportConnection, TransportError};
-use std::fmt;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::time::Duration;
 
@@ -17,6 +16,12 @@ pub struct UsbConnection {
 
 #[derive(Debug)]
 pub struct UsbTransport;
+
+impl Default for UsbTransport {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 
 impl UsbTransport {
     pub fn new() -> Self {

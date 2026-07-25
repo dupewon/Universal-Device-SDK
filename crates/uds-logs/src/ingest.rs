@@ -14,6 +14,12 @@ pub struct LogIngester {
     buffer: Arc<Mutex<Vec<LogEntry>>>,
 }
 
+impl Default for LogIngester {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl LogIngester {
     pub fn new() -> Self {
         Self {

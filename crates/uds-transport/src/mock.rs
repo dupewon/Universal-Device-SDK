@@ -37,6 +37,12 @@ pub struct MockConnection {
     inner: MockInner,
 }
 
+impl Default for MockConnection {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl MockConnection {
     pub fn new() -> Self {
         Self {
@@ -141,6 +147,12 @@ impl TransportConnection for MockConnection {
 
 #[derive(Debug)]
 pub struct MockTransport;
+
+impl Default for MockTransport {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 
 impl MockTransport {
     pub fn new() -> Self {

@@ -1,5 +1,3 @@
-use std::net::SocketAddr;
-
 #[cfg(feature = "full")]
 pub struct DashboardServer {
     addr: SocketAddr,
@@ -11,6 +9,13 @@ pub struct DashboardServer {
 
 #[cfg(not(feature = "full"))]
 pub struct DashboardServer;
+
+#[cfg(not(feature = "full"))]
+impl Default for DashboardServer {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 
 impl DashboardServer {
     #[cfg(feature = "full")]

@@ -6,7 +6,7 @@ pub fn run_generate(input: &str, lang: Option<&str>, output: Option<&str>) -> an
         anyhow::bail!("Input file not found: {}", input);
     }
 
-    let source = std::fs::read_to_string(input_path)?;
+    let _source = std::fs::read_to_string(input_path)?;
     let lang = lang.unwrap_or("rust");
     let out_dir = output.unwrap_or("generated");
 

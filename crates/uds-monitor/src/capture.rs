@@ -13,6 +13,12 @@ pub struct MonitorCapture {
     running: Arc<Mutex<bool>>,
 }
 
+impl Default for MonitorCapture {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl MonitorCapture {
     pub fn new() -> Self {
         Self {

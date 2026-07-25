@@ -2,7 +2,7 @@ use crate::traits::{Transport, TransportConfig, TransportConnection, TransportEr
 use std::fmt;
 use std::sync::{
     atomic::{AtomicBool, Ordering},
-    Arc, Mutex,
+    Arc,
 };
 use std::time::Duration;
 
@@ -86,6 +86,12 @@ impl TransportConnection for SerialConnection {
 
 #[derive(Debug)]
 pub struct SerialTransport;
+
+impl Default for SerialTransport {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 
 impl SerialTransport {
     pub fn new() -> Self {

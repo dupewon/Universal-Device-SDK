@@ -14,6 +14,12 @@ pub struct TelemetryAggregator {
     history: Arc<Mutex<Vec<MetricSnapshot>>>,
 }
 
+impl Default for TelemetryAggregator {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl TelemetryAggregator {
     pub fn new() -> Self {
         Self {

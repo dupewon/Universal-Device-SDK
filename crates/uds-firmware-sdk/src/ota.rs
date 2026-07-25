@@ -19,6 +19,12 @@ pub struct OtaClient {
     received: u32,
 }
 
+impl Default for OtaClient {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl OtaClient {
     pub fn new() -> Self {
         Self {

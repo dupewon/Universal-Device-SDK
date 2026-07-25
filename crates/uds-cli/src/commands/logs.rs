@@ -22,7 +22,7 @@ pub fn run_logs(level: Option<&str>, _lines: Option<u32>) -> anyhow::Result<()> 
     ];
 
     for (lvl, msg) in &sample_logs {
-        let ts = SystemTime::now()
+        let _ts = SystemTime::now()
             .duration_since(UNIX_EPOCH)
             .unwrap()
             .as_millis();

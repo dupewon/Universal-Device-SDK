@@ -1,9 +1,7 @@
 use crate::error::RpcError;
 use crate::message::RpcMessage;
-use bytes::Bytes;
 use std::fmt;
 use std::sync::atomic::{AtomicU16, Ordering};
-use std::sync::Arc;
 
 pub trait RpcClient: Send + Sync + fmt::Debug {
     fn call(&self, method: &str, params: &[u8]) -> Result<Vec<u8>, RpcError>;
@@ -82,7 +80,7 @@ impl RpcClientImpl {
         self.send_frame(&msg)?;
 
         let response = self.recv_frame()?;
-        if response.status.map_or(false, |s| s != 0) {
+        if response.status.is_some_and(|s| s != 0) {
             let err_msg = response.error_msg.unwrap_or_else(|| "unknown error".into());
             return Err(RpcError::RemoteError(err_msg));
         }

@@ -15,6 +15,12 @@ pub struct RpcServerImpl {
     methods: Mutex<HashMap<String, RpcHandler>>,
 }
 
+impl Default for RpcServerImpl {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl RpcServerImpl {
     pub fn new() -> Self {
         Self {

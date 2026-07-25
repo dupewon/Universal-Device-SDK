@@ -17,6 +17,12 @@ pub enum OtaState {
     Failed = 6,
 }
 
+impl Default for OtaUpdater {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl OtaUpdater {
     pub fn new() -> Self {
         Self {

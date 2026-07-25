@@ -1,5 +1,4 @@
 use crate::traits::{Transport, TransportConfig, TransportConnection, TransportError};
-use std::fmt;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::time::Duration;
 
@@ -16,6 +15,12 @@ pub struct BleConnection {
 
 #[derive(Debug)]
 pub struct BleTransport;
+
+impl Default for BleTransport {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 
 impl BleTransport {
     pub fn new() -> Self {

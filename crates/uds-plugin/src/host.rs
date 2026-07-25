@@ -1,4 +1,3 @@
-use crate::abi::exports;
 use std::path::Path;
 use std::sync::Mutex;
 
@@ -18,6 +17,12 @@ struct LoadedPlugin {
     version: String,
     #[allow(dead_code)]
     lib: Option<*mut std::ffi::c_void>,
+}
+
+impl Default for PluginHost {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl PluginHost {

@@ -1,5 +1,6 @@
 const LOG_BUFFER_CAPACITY: usize = 32;
 
+#[derive(Copy, Clone)]
 struct LogEntry {
     level: u8,
     message: [u8; 128],
@@ -11,6 +12,12 @@ pub struct FirmwareLogger {
     buffer: [LogEntry; LOG_BUFFER_CAPACITY],
     head: usize,
     count: usize,
+}
+
+impl Default for FirmwareLogger {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl FirmwareLogger {

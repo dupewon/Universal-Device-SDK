@@ -7,6 +7,12 @@ pub struct LogQuery {
     pub limit: Option<usize>,
 }
 
+impl Default for LogQuery {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl LogQuery {
     pub fn new() -> Self {
         Self {

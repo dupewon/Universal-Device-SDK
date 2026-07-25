@@ -1,5 +1,3 @@
-use std::sync::Arc;
-
 pub struct AppState {
     pub device_watch: tokio::sync::watch::Receiver<Vec<uds_core::types::DeviceInfo>>,
     pub log_ingester: uds_logs::ingest::LogIngester,
@@ -102,6 +100,7 @@ pub async fn get_metrics() -> &'static str {
     "{}"
 }
 
+#[allow(dead_code)]
 const DASHBOARD_HTML: &str = r#"<!DOCTYPE html>
 <html lang="en">
 <head>

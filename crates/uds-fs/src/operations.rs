@@ -10,6 +10,12 @@ pub trait FileSystem {
 
 pub struct FsOperations;
 
+impl Default for FsOperations {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl FsOperations {
     pub fn new() -> Self {
         Self

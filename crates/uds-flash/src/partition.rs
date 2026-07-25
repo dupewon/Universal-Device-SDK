@@ -19,7 +19,7 @@ pub enum PartitionType {
 }
 
 impl PartitionType {
-    pub fn from_str(s: &str) -> Self {
+    pub fn from_name(s: &str) -> Self {
         match s.to_lowercase().as_str() {
             "bootloader" => Self::Bootloader,
             "app" => Self::App,
@@ -35,6 +35,12 @@ impl PartitionType {
 
 pub struct PartitionManager {
     partitions: Vec<Partition>,
+}
+
+impl Default for PartitionManager {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl PartitionManager {

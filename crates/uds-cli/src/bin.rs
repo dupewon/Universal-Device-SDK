@@ -1,4 +1,4 @@
-use uds_cli::cli::{FirmwareCommand, FsCommand, PluginCommand, UdsCli, UdsCommand};
+use uds_cli::cli::{FirmwareCommand, UdsCli, UdsCommand};
 
 fn main() -> anyhow::Result<()> {
     let cli = UdsCli::parse();

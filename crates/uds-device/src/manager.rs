@@ -2,8 +2,9 @@ use crate::traits::{Device, DeviceError, DeviceManager};
 use std::collections::HashMap;
 use std::fmt;
 use std::sync::{Arc, Mutex};
-use uds_core::{DeviceId, DeviceInfo, DeviceStatus};
+use uds_core::{DeviceCapabilitySet, DeviceId, DeviceInfo, DeviceStatus};
 
+#[derive(Debug)]
 struct DeviceWrapper(Arc<dyn Device>);
 
 impl Device for DeviceWrapper {
@@ -12,6 +13,9 @@ impl Device for DeviceWrapper {
     }
     fn info(&self) -> &DeviceInfo {
         self.0.info()
+    }
+    fn capabilities(&self) -> &DeviceCapabilitySet {
+        self.0.capabilities()
     }
     fn status(&self) -> DeviceStatus {
         self.0.status()
@@ -22,11 +26,14 @@ impl Device for DeviceWrapper {
     fn disconnect(&self) -> Result<(), DeviceError> {
         self.0.disconnect()
     }
-    fn send(&self, data: &[u8]) -> Result<(), DeviceError> {
-        self.0.send(data)
+    fn reset(&self) -> Result<(), DeviceError> {
+        self.0.reset()
     }
-    fn recv(&self, buf: &mut [u8]) -> Result<usize, DeviceError> {
-        self.0.recv(buf)
+    fn flash(&self, image: &[u8]) -> Result<(), DeviceError> {
+        self.0.flash(image)
+    }
+    fn send_rpc(&self, method: &str, params: &[u8]) -> Result<Vec<u8>, DeviceError> {
+        self.0.send_rpc(method, params)
     }
 }
 
@@ -46,6 +53,12 @@ impl fmt::Debug for DeviceEntry {
 
 pub struct DeviceManagerImpl {
     devices: Mutex<HashMap<String, DeviceEntry>>,
+}
+
+impl Default for DeviceManagerImpl {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl DeviceManagerImpl {
@@ -77,7 +90,7 @@ impl DeviceManager for DeviceManagerImpl {
         let devices = self.devices.lock().unwrap();
         devices
             .get(&id.0)
-            .and_then(|entry| Some(Box::new(DeviceWrapper(Arc::clone(&entry.device)))))
+            .map(|entry| Box::new(DeviceWrapper(Arc::clone(&entry.device))) as Box<dyn Device>)
     }
 
     fn list(&self) -> Vec<DeviceInfo> {

@@ -1,6 +1,3 @@
-use std::sync::Arc;
-use std::time::Duration;
-
 #[cfg(feature = "full")]
 pub async fn ws_handler(
     axum::extract::State(state): axum::extract::State<Arc<super::routes::AppState>>,

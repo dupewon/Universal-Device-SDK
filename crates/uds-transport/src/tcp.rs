@@ -120,6 +120,12 @@ impl TransportConnection for TcpConnection {
 #[derive(Debug)]
 pub struct TcpTransport;
 
+impl Default for TcpTransport {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl TcpTransport {
     pub fn new() -> Self {
         Self
