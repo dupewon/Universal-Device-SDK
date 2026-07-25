@@ -11,11 +11,15 @@ const CRC16_CCITT_TABLE: [u16; 256] = {
                 crc <<= 1;
             }
             j += 1;
-            if j == 8 { break; }
+            if j == 8 {
+                break;
+            }
         }
         table[i as usize] = crc;
         i += 1;
-        if i == 256 { break; }
+        if i == 256 {
+            break;
+        }
     }
     table
 };
