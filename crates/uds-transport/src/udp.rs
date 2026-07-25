@@ -37,8 +37,8 @@ impl UdpConnection {
 
         if let Some(mc_addr) = multicast {
             socket.join_multicast_v4(
-                &mc_addr.parse().map_err(|e| TransportError::Config(e.to_string()))?,
-                &"0.0.0.0".parse().unwrap(),
+                &mc_addr.parse::<std::net::Ipv4Addr>().map_err(|e: std::net::AddrParseError| TransportError::Config(e.to_string()))?,
+                &"0.0.0.0".parse::<std::net::Ipv4Addr>().map_err(|e: std::net::AddrParseError| TransportError::Config(e.to_string()))?,
             ).ok();
         }
 

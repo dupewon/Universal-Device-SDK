@@ -28,7 +28,7 @@ impl TcpConnection {
     fn connect(host: &str, port: u16, timeout: Duration) -> Result<Self, TransportError> {
         let addr = format!("{}:{}", host, port);
         let stream = StdTcpStream::connect_timeout(
-            &addr.parse().map_err(|e| TransportError::Config(e.to_string()))?,
+            &addr.parse::<std::net::SocketAddr>().map_err(|e: std::net::AddrParseError| TransportError::Config(e.to_string()))?,
             timeout,
         ).map_err(|e| TransportError::ConnectionRefused(e.to_string()))?;
         stream.set_read_timeout(Some(timeout)).ok();
