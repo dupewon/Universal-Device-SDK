@@ -116,7 +116,7 @@ impl RpcClient for RpcClientImpl {
 mod tests {
     use super::*;
     use uds_transport::mock::MockTransport;
-    use uds_transport::traits::{Transport, TransportConfig, TransportConnection};
+    use uds_transport::traits::{Transport, TransportConfig};
 
     #[test]
     fn test_notify_roundtrip() {

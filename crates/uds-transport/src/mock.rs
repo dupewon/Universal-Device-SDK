@@ -199,7 +199,7 @@ mod tests {
             })
             .unwrap();
         conn.send(b"hello").unwrap();
-        let mc = conn.as_any().downcast_ref::<MockConnection>().unwrap();
+        let mc = conn.as_any().unwrap().downcast_ref::<MockConnection>().unwrap();
         let written = mc.drain_written();
         assert_eq!(written, b"hello");
     }
