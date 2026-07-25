@@ -1,0 +1,49 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/uds-core",
+    "crates/uds-protocol",
+    "crates/uds-transport",
+    "crates/uds-device",
+    "crates/uds-rpc",
+    "crates/uds-fs",
+    "crates/uds-flash",
+    "crates/uds-monitor",
+    "crates/uds-logs",
+    "crates/uds-benchmark",
+    "crates/uds-plugin",
+    "crates/uds-cli",
+    "crates/uds-firmware-sdk",
+    "crates/uds-gen",
+    "crates/uds-dashboard",
+    "tests",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+license = "Apache-2.0"
+authors = ["Universal Device SDK Contributors"]
+repository = "https://github.com/dupewon/Universal-Device-SDK"
+homepage = "https://github.com/dupewon/Universal-Device-SDK"
+
+[workspace.dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+thiserror = "2"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["json", "env-filter"] }
+bytes = "1"
+clap = { version = "4", features = ["derive"] }
+tokio = { version = "1", features = ["full"] }
+anyhow = "1"
+toml = "0.8"
+indicatif = "0.17"
+mockall = "0.13"
+uuid = { version = "1", features = ["v4"] }
+sha2 = "0.10"
+chrono = { version = "0.4", features = ["serde"] }
+futures = "0.3"
+futures-util = "0.3"
+socket2 = "0.5"
+rand = "0.8"

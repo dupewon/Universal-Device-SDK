@@ -1,0 +1,12 @@
+[package]
+name = "uds-plugin"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+description = "Plugin host: dynamic library loading, ABI versioning, registration, and lifecycle management."
+
+[dependencies]
+uds-core = { path = "../uds-core" }
+thiserror.workspace = true
+tracing.workspace = true

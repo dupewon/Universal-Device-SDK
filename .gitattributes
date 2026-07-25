@@ -1,0 +1,9 @@
+* text=auto eol=lf
+*.rs text diff=rust
+*.md text diff=markdown
+*.toml text
+*.lock text -diff
+*.png binary
+*.bin binary
+*.hex binary
+*.elf binary

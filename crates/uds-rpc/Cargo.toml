@@ -1,0 +1,17 @@
+[package]
+name = "uds-rpc"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+description = "RPC client and server stubs, method dispatch, request/response handling, streaming over UDS protocol."
+
+[dependencies]
+uds-core = { path = "../uds-core" }
+uds-protocol = { path = "../uds-protocol" }
+uds-transport = { path = "../uds-transport" }
+serde.workspace = true
+thiserror.workspace = true
+tracing.workspace = true
+tokio.workspace = true
+bytes.workspace = true

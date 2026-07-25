@@ -1,0 +1,15 @@
+[package]
+name = "uds-fs"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+description = "Virtual file system abstraction over device storage via RPC."
+
+[dependencies]
+uds-core = { path = "../uds-core" }
+uds-rpc = { path = "../uds-rpc" }
+uds-device = { path = "../uds-device" }
+serde.workspace = true
+thiserror.workspace = true
+tracing.workspace = true

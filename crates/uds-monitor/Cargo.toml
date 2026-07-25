@@ -1,0 +1,17 @@
+[package]
+name = "uds-monitor"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+description = "Real-time monitoring: serial console capture, log streaming, telemetry aggregation."
+
+[dependencies]
+uds-core = { path = "../uds-core" }
+uds-device = { path = "../uds-device" }
+uds-rpc = { path = "../uds-rpc" }
+uds-logs = { path = "../uds-logs" }
+serde.workspace = true
+thiserror.workspace = true
+tracing.workspace = true
+tokio.workspace = true

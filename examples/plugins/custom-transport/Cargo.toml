@@ -1,0 +1,13 @@
+[package]
+name = "uds-can-transport"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+uds-plugin = { path = "../../../crates/uds-plugin" }
+uds-transport = { path = "../../../crates/uds-transport" }
+uds-core = { path = "../../../crates/uds-core" }
+tracing = "0.1"

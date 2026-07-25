@@ -1,0 +1,17 @@
+[package]
+name = "uds-flash"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+description = "Flashing logic: partition management, OTA updates, image verification, and progress reporting."
+
+[dependencies]
+uds-core = { path = "../uds-core" }
+uds-device = { path = "../uds-device" }
+uds-rpc = { path = "../uds-rpc" }
+serde.workspace = true
+thiserror.workspace = true
+tracing.workspace = true
+tokio.workspace = true
+sha2.workspace = true

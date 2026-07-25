@@ -1,0 +1,33 @@
+[package]
+name = "uds-dashboard"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+description = "Optional web-based GUI built on top of the Universal Device SDK."
+
+[dependencies]
+uds-core = { path = "../uds-core" }
+uds-monitor = { path = "../uds-monitor" }
+uds-logs = { path = "../uds-logs" }
+serde.workspace = true
+serde_json.workspace = true
+tracing.workspace = true
+tokio.workspace = true
+chrono.workspace = true
+futures-util.workspace = true
+
+[features]
+default = []
+full = ["axum", "tower-http"]
+
+[dependencies.axum]
+optional = true
+version = "0.8"
+
+[dependencies.tower-http]
+optional = true
+version = "0.6"
+features = ["cors", "fs"]
+
+

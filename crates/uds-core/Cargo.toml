@@ -1,0 +1,17 @@
+[package]
+name = "uds-core"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+description = "Shared types, error definitions, and configuration structures for UDS."
+
+[dependencies]
+serde.workspace = true
+thiserror.workspace = true
+tracing.workspace = true
+bytes.workspace = true
+
+[features]
+default = ["std"]
+std = []

@@ -1,0 +1,14 @@
+{
+  "name": "@universal-device-sdk/uds-ts",
+  "version": "0.1.0",
+  "description": "TypeScript bindings for Universal Device SDK",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "jest"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  }
+}

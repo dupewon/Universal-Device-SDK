@@ -1,0 +1,21 @@
+[package]
+name = "uds-device"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+description = "Device abstraction, discovery, pairing, and concrete adapters for ESP32, STM32, RP2040, Arduino."
+
+[dependencies]
+uds-core = { path = "../uds-core" }
+uds-protocol = { path = "../uds-protocol" }
+uds-transport = { path = "../uds-transport" }
+uds-rpc = { path = "../uds-rpc" }
+serde.workspace = true
+thiserror.workspace = true
+tracing.workspace = true
+tokio.workspace = true
+rand.workspace = true
+
+[dev-dependencies]
+mockall.workspace = true

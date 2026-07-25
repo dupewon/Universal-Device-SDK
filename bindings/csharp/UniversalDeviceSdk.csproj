@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <PackageId>UniversalDeviceSdk</PackageId>
+    <Version>0.1.0</Version>
+    <Description>C# bindings for Universal Device SDK</Description>
+  </PropertyGroup>
+</Project>

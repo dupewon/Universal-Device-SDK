@@ -1,0 +1,10 @@
+[package]
+name = "uds-tests"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+uds-core = { path = "../crates/uds-core" }
+uds-protocol = { path = "../crates/uds-protocol" }
+uds-transport = { path = "../crates/uds-transport" }

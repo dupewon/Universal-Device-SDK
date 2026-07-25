@@ -1,0 +1,41 @@
+[package]
+name = "uds-transport"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+description = "Transport layer traits and implementations for UDS: serial, TCP, UDP, WebSocket, BLE, USB."
+
+[dependencies]
+uds-core = { path = "../uds-core" }
+uds-protocol = { path = "../uds-protocol" }
+tokio.workspace = true
+serde.workspace = true
+thiserror.workspace = true
+tracing.workspace = true
+bytes.workspace = true
+
+[features]
+default = ["serial"]
+serial = ["tokio-serial"]
+tcp = []
+udp = []
+websocket = ["tokio-tungstenite"]
+ble = ["btleplug"]
+usb = ["rusb"]
+
+[dependencies.tokio-serial]
+optional = true
+version = "5"
+
+[dependencies.tokio-tungstenite]
+optional = true
+version = "0.24"
+
+[dependencies.btleplug]
+optional = true
+version = "0.11"
+
+[dependencies.rusb]
+optional = true
+version = "0.9"

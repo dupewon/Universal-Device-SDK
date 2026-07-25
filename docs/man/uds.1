@@ -1,0 +1,103 @@
+.TH UDS 1 "2026-07-25" "Universal Device SDK" "User Commands"
+.SH NAME
+uds \- Universal Device SDK command-line interface
+.SH SYNOPSIS
+.B uds
+[\fI--config\fR \fIfile\fR] [\fI--log-level\fR \fIlevel\fR] [\fI--output\fR \fIformat\fR]
+[\fI--transport\fR \fIname\fR] [\fI--device\fR \fIid\fR] \fIcommand\fR [\fIargs\fR]
+.SH DESCRIPTION
+Universal Device SDK (UDS) is a cross-platform, CLI-first developer platform for
+embedded device development across heterogeneous hardware architectures.
+.SH COMMANDS
+.TP
+.B init
+Initialize a new UDS project directory.
+.TP
+.B devices
+List and discover connected devices. Use \fB--scan\fR for active discovery.
+.TP
+.B inspect
+Show detailed information about a connected device.
+.TP
+.B doctor
+Run system diagnostics: check transports, configuration, and connectivity.
+.TP
+.B logs
+Tail device logs with optional level filtering.
+.TP
+.B monitor
+Real-time device monitoring with console output.
+.TP
+.B flash
+Flash a firmware image to a connected device.
+.TP
+.B update
+OTA firmware update with rollback support.
+.TP
+.B benchmark
+Run latency and throughput benchmarks.
+.TP
+.B plugins
+Manage UDS plugins (list, install, remove).
+.TP
+.B rpc
+Invoke an RPC method manually.
+.TP
+.B fs
+Filesystem operations on device (ls, cat, cp, mv, rm, mkdir).
+.TP
+.B build
+Build firmware from source for a target device.
+.TP
+.B firmware
+Manage firmware images (list, verify, sign).
+.TP
+.B generate
+Generate code from UDS IDL definitions.
+.TP
+.B docs
+Open documentation.
+.TP
+.B version
+Print version information.
+.SH OPTIONS
+.TP
+.B \-\-config \fIfile\fR
+Path to configuration file (default: ~/.uds/config.toml).
+.TP
+.B \-\-log-level \fIlevel\fR
+Set log level: error, warn, info, debug, trace (default: info).
+.TP
+.B \-\-output \fIformat\fR
+Output format: human, json (default: human).
+.TP
+.B \-\-transport \fIname\fR
+Transport to use: serial, tcp, udp, ws, ble, usb, mock.
+.TP
+.B \-\-device \fIid\fR
+Target device ID.
+.SH EXIT CODES
+.TP
+0
+Success
+.TP
+1
+General error
+.TP
+2
+Usage error
+.TP
+3
+Device error
+.TP
+4
+Network error
+.TP
+5
+Configuration error
+.SH FILES
+.TP
+~/.uds/config.toml
+User configuration file.
+.SH SEE ALSO
+Full documentation at https://github.com/dupewon/Universal-Device-SDK/docs

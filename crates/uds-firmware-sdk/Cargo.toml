@@ -1,0 +1,17 @@
+[package]
+name = "uds-firmware-sdk"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+description = "Client library for embedded targets. C/C++ headers and Rust wrappers for device-side UDS communication."
+
+[dependencies]
+uds-core = { path = "../uds-core" }
+uds-protocol = { path = "../uds-protocol" }
+bytes.workspace = true
+
+[lib]
+crate-type = ["lib", "staticlib", "cdylib"]
+
+
