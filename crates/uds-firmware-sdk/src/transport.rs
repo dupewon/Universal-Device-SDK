@@ -3,7 +3,9 @@ use uds_core::error::Error;
 pub trait FirmwareTransport {
     fn send(&mut self, data: &[u8]) -> Result<(), Error>;
     fn recv(&mut self, buf: &mut [u8]) -> Result<usize, Error>;
-    fn flush(&mut self) -> Result<(), Error> { Ok(()) }
+    fn flush(&mut self) -> Result<(), Error> {
+        Ok(())
+    }
 }
 
 pub struct TransportAdapter<T: FirmwareTransport> {

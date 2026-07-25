@@ -1,13 +1,7 @@
 use std::path::Path;
 
 pub fn run_init() -> anyhow::Result<()> {
-    let dirs = [
-        "src",
-        "firmware",
-        "configs",
-        "scripts",
-        "tests",
-    ];
+    let dirs = ["src", "firmware", "configs", "scripts", "tests"];
 
     for d in &dirs {
         let path = Path::new(d);

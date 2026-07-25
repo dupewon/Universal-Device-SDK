@@ -1,7 +1,9 @@
 use crate::traits::{Device, DeviceError};
-use uds_core::{DeviceId, DeviceInfo, DeviceStatus, DeviceCapabilitySet, TransportType, TransportHint,
-                HardwareCapabilities, FirmwareCapabilities, FeatureFlags};
 use std::fmt;
+use uds_core::{
+    DeviceCapabilitySet, DeviceId, DeviceInfo, DeviceStatus, FeatureFlags, FirmwareCapabilities,
+    HardwareCapabilities, TransportHint, TransportType,
+};
 
 #[derive(Debug)]
 pub struct ArduinoDevice {
@@ -37,9 +39,16 @@ impl ArduinoDevice {
                         supports_encryption: false,
                     },
                     features: FeatureFlags {
-                        ota: false, filesystem: false, logging: true, monitoring: false, benchmarking: false,
+                        ota: false,
+                        filesystem: false,
+                        logging: true,
+                        monitoring: false,
+                        benchmarking: false,
                     },
                 },
+                connected: false,
+                platform: "Arduino".into(),
+                firmware_version: "0.1.0".into(),
             },
             status: DeviceStatus::Disconnected,
         }
@@ -47,15 +56,34 @@ impl ArduinoDevice {
 }
 
 impl Device for ArduinoDevice {
-    fn id(&self) -> &DeviceId { &self.id }
-    fn info(&self) -> &DeviceInfo { &self.info }
-    fn capabilities(&self) -> &DeviceCapabilitySet { &self.info.capabilities }
-    fn status(&self) -> DeviceStatus { self.status }
-    fn connect(&self) -> Result<(), DeviceError> { Ok(()) }
-    fn disconnect(&self) -> Result<(), DeviceError> { Ok(()) }
-    fn reset(&self) -> Result<(), DeviceError> { Ok(()) }
+    fn id(&self) -> &DeviceId {
+        &self.id
+    }
+    fn info(&self) -> &DeviceInfo {
+        &self.info
+    }
+    fn capabilities(&self) -> &DeviceCapabilitySet {
+        &self.info.capabilities
+    }
+    fn status(&self) -> DeviceStatus {
+        self.status
+    }
+    fn connect(&self) -> Result<(), DeviceError> {
+        Ok(())
+    }
+    fn disconnect(&self) -> Result<(), DeviceError> {
+        Ok(())
+    }
+    fn reset(&self) -> Result<(), DeviceError> {
+        Ok(())
+    }
     fn flash(&self, image: &[u8]) -> Result<(), DeviceError> {
-        tracing::info!("Flashing {} bytes to Arduino via {}, {:?}", image.len(), self.info.transport_hints[0].address, std::str::from_utf8(image));
+        tracing::info!(
+            "Flashing {} bytes to Arduino via {}, {:?}",
+            image.len(),
+            self.info.transport_hints[0].address,
+            std::str::from_utf8(image)
+        );
         Ok(())
     }
     fn send_rpc(&self, _method: &str, _params: &[u8]) -> Result<Vec<u8>, DeviceError> {

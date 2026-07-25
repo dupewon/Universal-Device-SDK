@@ -16,7 +16,12 @@ pub struct FirmwareLogger {
 impl FirmwareLogger {
     pub fn new() -> Self {
         Self {
-            buffer: [LogEntry { level: 0, message: [0u8; 128], len: 0, timestamp: 0 }; LOG_BUFFER_CAPACITY],
+            buffer: [LogEntry {
+                level: 0,
+                message: [0u8; 128],
+                len: 0,
+                timestamp: 0,
+            }; LOG_BUFFER_CAPACITY],
             head: 0,
             count: 0,
         }
@@ -49,11 +54,19 @@ impl FirmwareLogger {
     where
         F: FnMut(u8, &[u8], u64),
     {
-        let start = if self.count < LOG_BUFFER_CAPACITY { 0 } else { self.head };
+        let start = if self.count < LOG_BUFFER_CAPACITY {
+            0
+        } else {
+            self.head
+        };
         for i in 0..self.count {
             let idx = (start + i) % LOG_BUFFER_CAPACITY;
             let entry = &self.buffer[idx];
-            let msg_end = entry.message.iter().position(|&b| b == 0).unwrap_or(entry.len as usize);
+            let msg_end = entry
+                .message
+                .iter()
+                .position(|&b| b == 0)
+                .unwrap_or(entry.len as usize);
             callback(entry.level, &entry.message[..msg_end], entry.timestamp);
         }
         self.count = 0;

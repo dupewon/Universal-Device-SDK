@@ -1,14 +1,14 @@
+pub mod checksum;
+pub mod error;
 pub mod frame;
 pub mod handshake;
 pub mod message;
-pub mod checksum;
-pub mod error;
 
+pub use checksum::crc16_ccitt;
+pub use error::ProtocolError;
 pub use frame::Frame;
 pub use handshake::Handshake;
 pub use message::{Message, MessageType};
-pub use checksum::crc16_ccitt;
-pub use error::ProtocolError;
 
 pub const PROTOCOL_VERSION_MAJOR: u8 = 1;
 pub const PROTOCOL_VERSION_MINOR: u8 = 0;

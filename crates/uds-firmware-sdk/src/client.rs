@@ -30,7 +30,9 @@ impl<T: FirmwareTransport> UdsClient<T> {
         match self.transport.recv(&mut handshake_buf) {
             Ok(n) if n > 0 => {
                 if let Ok(msg) = Message::decode(&handshake_buf[..n]) {
-                    if msg.msg_type == MessageType::Request && msg.method.as_deref() == Some("handshake") {
+                    if msg.msg_type == MessageType::Request
+                        && msg.method.as_deref() == Some("handshake")
+                    {
                         let ack = Message {
                             msg_type: MessageType::Response,
                             method: Some("handshake".into()),

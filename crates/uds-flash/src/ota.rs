@@ -1,6 +1,6 @@
-use std::sync::atomic::{AtomicU8, Ordering};
 use crate::image::FirmwareImage;
 use crate::progress::ProgressReporter;
+use std::sync::atomic::{AtomicU8, Ordering};
 
 pub struct OtaUpdater {
     state: AtomicU8,
@@ -19,7 +19,9 @@ pub enum OtaState {
 
 impl OtaUpdater {
     pub fn new() -> Self {
-        Self { state: AtomicU8::new(OtaState::Idle as u8) }
+        Self {
+            state: AtomicU8::new(OtaState::Idle as u8),
+        }
     }
 
     pub fn state(&self) -> OtaState {
@@ -38,11 +40,16 @@ impl OtaUpdater {
         if self.state() != OtaState::Idle {
             return Err("OTA already in progress".into());
         }
-        self.state.store(OtaState::Transferring as u8, Ordering::SeqCst);
+        self.state
+            .store(OtaState::Transferring as u8, Ordering::SeqCst);
         Ok(())
     }
 
-    pub fn update(&self, image: &FirmwareImage, reporter: &dyn ProgressReporter) -> Result<(), String> {
+    pub fn update(
+        &self,
+        image: &FirmwareImage,
+        reporter: &dyn ProgressReporter,
+    ) -> Result<(), String> {
         reporter.on_progress(0, "Starting OTA update...");
 
         if image.is_empty() {
@@ -50,10 +57,15 @@ impl OtaUpdater {
             return Err("Empty firmware image".into());
         }
 
-        self.state.store(OtaState::Transferring as u8, Ordering::SeqCst);
-        reporter.on_progress(20, &format!("Transferring {} KB...", image.size_kb() as u32));
+        self.state
+            .store(OtaState::Transferring as u8, Ordering::SeqCst);
+        reporter.on_progress(
+            20,
+            &format!("Transferring {} KB...", image.size_kb() as u32),
+        );
 
-        self.state.store(OtaState::Verifying as u8, Ordering::SeqCst);
+        self.state
+            .store(OtaState::Verifying as u8, Ordering::SeqCst);
         reporter.on_progress(60, "Verifying image integrity...");
 
         if !image.verify() {
@@ -75,7 +87,8 @@ impl OtaUpdater {
         reporter.on_progress(50, "Restoring previous partition...");
         std::thread::sleep(std::time::Duration::from_millis(200));
         reporter.on_progress(100, "Rollback complete. Rebooting...");
-        self.state.store(OtaState::RolledBack as u8, Ordering::SeqCst);
+        self.state
+            .store(OtaState::RolledBack as u8, Ordering::SeqCst);
         Ok(())
     }
 

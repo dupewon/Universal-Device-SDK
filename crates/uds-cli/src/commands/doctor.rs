@@ -3,7 +3,10 @@ pub fn run_doctor() -> anyhow::Result<()> {
 
     // Check Rust toolchain
     println!("[1/6] Rust toolchain...");
-    match std::process::Command::new("rustc").arg("--version").output() {
+    match std::process::Command::new("rustc")
+        .arg("--version")
+        .output()
+    {
         Ok(out) => {
             let version = String::from_utf8_lossy(&out.stdout);
             println!("      Rust: {}", version.trim());
@@ -25,7 +28,10 @@ pub fn run_doctor() -> anyhow::Result<()> {
     // Check transports
     println!("[3/6] Transport availability...");
     let transports: Vec<(&str, bool)> = vec![
-        ("serial", uds_transport::serial::SerialTransport::new().is_available()),
+        (
+            "serial",
+            uds_transport::serial::SerialTransport::new().is_available(),
+        ),
         ("tcp", true),
         ("udp", true),
         ("websocket", true),

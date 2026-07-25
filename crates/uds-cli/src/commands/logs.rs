@@ -11,7 +11,10 @@ pub fn run_logs(level: Option<&str>, _lines: Option<u32>) -> anyhow::Result<()> 
         ("debug", "BLE advertisement started on channel 37"),
         ("info", "MQTT broker connected at 192.168.1.100:1883"),
         ("warn", "Flash wear leveling: block 12 reached 90% capacity"),
-        ("info", "Sensor reading: temp=24.3°C, humidity=58%, pressure=1013.2hPa"),
+        (
+            "info",
+            "Sensor reading: temp=24.3°C, humidity=58%, pressure=1013.2hPa",
+        ),
         ("error", "I2C bus timeout on address 0x76, retrying..."),
         ("info", "OTA update available: v0.2.0 (4.2 MB)"),
         ("debug", "RPC call 'GetStatus' handled in 2.3ms"),
@@ -19,12 +22,25 @@ pub fn run_logs(level: Option<&str>, _lines: Option<u32>) -> anyhow::Result<()> 
     ];
 
     for (lvl, msg) in &sample_logs {
-        let ts = SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_millis();
+        let ts = SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .unwrap()
+            .as_millis();
         let level_prio = match *lvl {
-            "error" => 0, "warn" => 1, "info" => 2, "debug" => 3, "trace" => 4, _ => 5,
+            "error" => 0,
+            "warn" => 1,
+            "info" => 2,
+            "debug" => 3,
+            "trace" => 4,
+            _ => 5,
         };
         let filter_prio = match level_filter {
-            "error" => 0, "warn" => 1, "info" => 2, "debug" => 3, "trace" => 4, _ => 2,
+            "error" => 0,
+            "warn" => 1,
+            "info" => 2,
+            "debug" => 3,
+            "trace" => 4,
+            _ => 2,
         };
         if level_prio > filter_prio {
             continue;

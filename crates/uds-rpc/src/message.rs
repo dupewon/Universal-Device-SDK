@@ -1,4 +1,4 @@
-use bytes::{Bytes, BytesMut, BufMut};
+use bytes::{BufMut, Bytes, BytesMut};
 
 #[derive(Debug, Clone)]
 pub struct RpcMessage {
@@ -64,12 +64,18 @@ impl RpcMessage {
         }
 
         match self.stream_id {
-            Some(id) => { buf.put_u8(1); buf.put_u32(id); }
+            Some(id) => {
+                buf.put_u8(1);
+                buf.put_u32(id);
+            }
             None => buf.put_u8(0),
         }
 
         match self.status {
-            Some(s) => { buf.put_u8(1); buf.put_u32(s); }
+            Some(s) => {
+                buf.put_u8(1);
+                buf.put_u32(s);
+            }
             None => buf.put_u8(0),
         }
 
@@ -91,58 +97,106 @@ impl RpcMessage {
     pub fn decode(data: &[u8]) -> Result<Self, crate::error::RpcError> {
         let mut pos = 0;
         if data.len() < 3 {
-            return Err(crate::error::RpcError::Transport("message too short".into()));
+            return Err(crate::error::RpcError::Transport(
+                "message too short".into(),
+            ));
         }
-        let msg_type = data[pos]; pos += 1;
-        let seq = u16::from_le_bytes([data[pos], data[pos + 1]]); pos += 2;
+        let msg_type = data[pos];
+        pos += 1;
+        let seq = u16::from_le_bytes([data[pos], data[pos + 1]]);
+        pos += 2;
 
         let method = if pos < data.len() && data[pos] == 1 {
             pos += 1;
-            if pos + 2 > data.len() { return Err(crate::error::RpcError::Transport("truncated method".into())); }
-            let mlen = u16::from_le_bytes([data[pos], data[pos + 1]]) as usize; pos += 2;
-            if pos + mlen > data.len() { return Err(crate::error::RpcError::Transport("truncated method name".into())); }
+            if pos + 2 > data.len() {
+                return Err(crate::error::RpcError::Transport("truncated method".into()));
+            }
+            let mlen = u16::from_le_bytes([data[pos], data[pos + 1]]) as usize;
+            pos += 2;
+            if pos + mlen > data.len() {
+                return Err(crate::error::RpcError::Transport(
+                    "truncated method name".into(),
+                ));
+            }
             let m = String::from_utf8(data[pos..pos + mlen].to_vec())
                 .map_err(|_| crate::error::RpcError::Protocol("invalid UTF-8".into()))?;
             pos += mlen;
             Some(m)
-        } else { pos += 1; None };
+        } else {
+            pos += 1;
+            None
+        };
 
         let stream_id = if pos < data.len() && data[pos] == 1 {
             pos += 1;
-            if pos + 4 > data.len() { return Err(crate::error::RpcError::Transport("truncated stream id".into())); }
-            let id = u32::from_le_bytes([data[pos], data[pos+1], data[pos+2], data[pos+3]]); pos += 4;
+            if pos + 4 > data.len() {
+                return Err(crate::error::RpcError::Transport(
+                    "truncated stream id".into(),
+                ));
+            }
+            let id = u32::from_le_bytes([data[pos], data[pos + 1], data[pos + 2], data[pos + 3]]);
+            pos += 4;
             Some(id)
-        } else { pos += 1; None };
+        } else {
+            pos += 1;
+            None
+        };
 
         let status = if pos < data.len() && data[pos] == 1 {
             pos += 1;
-            if pos + 4 > data.len() { return Err(crate::error::RpcError::Transport("truncated status".into())); }
-            let s = u32::from_le_bytes([data[pos], data[pos+1], data[pos+2], data[pos+3]]); pos += 4;
+            if pos + 4 > data.len() {
+                return Err(crate::error::RpcError::Transport("truncated status".into()));
+            }
+            let s = u32::from_le_bytes([data[pos], data[pos + 1], data[pos + 2], data[pos + 3]]);
+            pos += 4;
             Some(s)
-        } else { pos += 1; None };
+        } else {
+            pos += 1;
+            None
+        };
 
         let error_msg = if pos < data.len() && data[pos] == 1 {
             pos += 1;
-            if pos + 2 > data.len() { return Err(crate::error::RpcError::Transport("truncated error".into())); }
-            let elen = u16::from_le_bytes([data[pos], data[pos+1]]) as usize; pos += 2;
-            if pos + elen > data.len() { return Err(crate::error::RpcError::Transport("truncated error msg".into())); }
+            if pos + 2 > data.len() {
+                return Err(crate::error::RpcError::Transport("truncated error".into()));
+            }
+            let elen = u16::from_le_bytes([data[pos], data[pos + 1]]) as usize;
+            pos += 2;
+            if pos + elen > data.len() {
+                return Err(crate::error::RpcError::Transport(
+                    "truncated error msg".into(),
+                ));
+            }
             let e = String::from_utf8(data[pos..pos + elen].to_vec())
                 .map_err(|_| crate::error::RpcError::Protocol("invalid UTF-8".into()))?;
             pos += elen;
             Some(e)
-        } else { pos += 1; None };
+        } else {
+            pos += 1;
+            None
+        };
 
         if pos + 4 > data.len() {
-            return Err(crate::error::RpcError::Transport("truncated payload length".into()));
+            return Err(crate::error::RpcError::Transport(
+                "truncated payload length".into(),
+            ));
         }
-        let plen = u32::from_le_bytes([data[pos], data[pos+1], data[pos+2], data[pos+3]]) as usize;
+        let plen =
+            u32::from_le_bytes([data[pos], data[pos + 1], data[pos + 2], data[pos + 3]]) as usize;
         pos += 4;
         if pos + plen > data.len() {
-            return Err(crate::error::RpcError::Transport("truncated payload".into()));
+            return Err(crate::error::RpcError::Transport(
+                "truncated payload".into(),
+            ));
         }
 
         Ok(Self {
-            seq, msg_type, method, stream_id, status, error_msg,
+            seq,
+            msg_type,
+            method,
+            stream_id,
+            status,
+            error_msg,
             payload: Bytes::copy_from_slice(&data[pos..pos + plen]),
         })
     }

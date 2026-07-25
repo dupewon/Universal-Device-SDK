@@ -1,6 +1,6 @@
+use crate::traits::Transport;
 use std::collections::HashMap;
 use std::sync::{Arc, RwLock};
-use crate::traits::Transport;
 
 pub struct TransportRegistry {
     transports: RwLock<HashMap<&'static str, Arc<dyn Transport>>>,
@@ -8,7 +8,9 @@ pub struct TransportRegistry {
 
 impl TransportRegistry {
     pub fn new() -> Self {
-        Self { transports: RwLock::new(HashMap::new()) }
+        Self {
+            transports: RwLock::new(HashMap::new()),
+        }
     }
 
     pub fn register(&self, transport: Arc<dyn Transport>) {
@@ -33,7 +35,10 @@ impl TransportRegistry {
         map.contains_key(name)
     }
 
-    pub fn from_config(config: &crate::traits::TransportConfig, registry: &Self) -> Result<Arc<dyn Transport>, crate::traits::TransportError> {
+    pub fn from_config(
+        config: &crate::traits::TransportConfig,
+        registry: &Self,
+    ) -> Result<Arc<dyn Transport>, crate::traits::TransportError> {
         let name = match config {
             crate::traits::TransportConfig::Serial { .. } => "serial",
             crate::traits::TransportConfig::Tcp { .. } => "tcp",
@@ -43,9 +48,9 @@ impl TransportRegistry {
             crate::traits::TransportConfig::Usb { .. } => "usb",
             crate::traits::TransportConfig::Mock { .. } => "mock",
         };
-        registry.get(name).ok_or_else(|| crate::traits::TransportError::Config(
-            format!("transport '{}' not registered", name)
-        ))
+        registry.get(name).ok_or_else(|| {
+            crate::traits::TransportError::Config(format!("transport '{}' not registered", name))
+        })
     }
 }
 

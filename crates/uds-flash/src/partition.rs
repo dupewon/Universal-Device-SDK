@@ -41,12 +41,42 @@ impl PartitionManager {
     pub fn new() -> Self {
         Self {
             partitions: vec![
-                Partition { name: "bootloader".into(), offset: 0x1000, size: 0x8000, partition_type: PartitionType::Bootloader },
-                Partition { name: "nvs".into(), offset: 0x9000, size: 0x6000, partition_type: PartitionType::Nvs },
-                Partition { name: "otadata".into(), offset: 0xF000, size: 0x2000, partition_type: PartitionType::OtaData },
-                Partition { name: "ota_0".into(), offset: 0x10000, size: 0x1C0000, partition_type: PartitionType::OtaOld },
-                Partition { name: "ota_1".into(), offset: 0x1D0000, size: 0x1C0000, partition_type: PartitionType::OtaNew },
-                Partition { name: "spiffs".into(), offset: 0x390000, size: 0x70000, partition_type: PartitionType::Spiffs },
+                Partition {
+                    name: "bootloader".into(),
+                    offset: 0x1000,
+                    size: 0x8000,
+                    partition_type: PartitionType::Bootloader,
+                },
+                Partition {
+                    name: "nvs".into(),
+                    offset: 0x9000,
+                    size: 0x6000,
+                    partition_type: PartitionType::Nvs,
+                },
+                Partition {
+                    name: "otadata".into(),
+                    offset: 0xF000,
+                    size: 0x2000,
+                    partition_type: PartitionType::OtaData,
+                },
+                Partition {
+                    name: "ota_0".into(),
+                    offset: 0x10000,
+                    size: 0x1C0000,
+                    partition_type: PartitionType::OtaOld,
+                },
+                Partition {
+                    name: "ota_1".into(),
+                    offset: 0x1D0000,
+                    size: 0x1C0000,
+                    partition_type: PartitionType::OtaNew,
+                },
+                Partition {
+                    name: "spiffs".into(),
+                    offset: 0x390000,
+                    size: 0x70000,
+                    partition_type: PartitionType::Spiffs,
+                },
             ],
         }
     }
@@ -60,7 +90,10 @@ impl PartitionManager {
     }
 
     pub fn find_by_type(&self, pt: PartitionType) -> Vec<&Partition> {
-        self.partitions.iter().filter(|p| p.partition_type == pt).collect()
+        self.partitions
+            .iter()
+            .filter(|p| p.partition_type == pt)
+            .collect()
     }
 
     pub fn ota_partition(&self) -> Option<&Partition> {

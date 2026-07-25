@@ -1,6 +1,6 @@
+use crate::abi::exports;
 use std::path::Path;
 use std::sync::Mutex;
-use crate::abi::exports;
 
 #[cfg(target_os = "windows")]
 const PLUGIN_EXT: &str = "dll";
@@ -22,7 +22,9 @@ struct LoadedPlugin {
 
 impl PluginHost {
     pub fn new() -> Self {
-        Self { loaded: Mutex::new(Vec::new()) }
+        Self {
+            loaded: Mutex::new(Vec::new()),
+        }
     }
 
     pub fn load(&self, path: &str) -> Result<(), String> {
@@ -31,16 +33,15 @@ impl PluginHost {
             return Err(format!("plugin not found: {}", path));
         }
 
-        let ext = p.extension()
-            .and_then(|e| e.to_str())
-            .unwrap_or("");
+        let ext = p.extension().and_then(|e| e.to_str()).unwrap_or("");
 
         if ext != PLUGIN_EXT && ext != "so" && ext != "dylib" && ext != "dll" {
             return Err(format!("unknown plugin extension: .{}", ext));
         }
 
         tracing::info!("Loading plugin: {}", path);
-        let name = p.file_stem()
+        let name = p
+            .file_stem()
             .and_then(|s| s.to_str())
             .unwrap_or("unknown")
             .to_string();
@@ -62,7 +63,9 @@ impl PluginHost {
 
     pub fn unload(&self, name: &str) -> Result<(), String> {
         let mut loaded = self.loaded.lock().unwrap();
-        let pos = loaded.iter().position(|p| p.name == name)
+        let pos = loaded
+            .iter()
+            .position(|p| p.name == name)
             .ok_or_else(|| format!("plugin '{}' not loaded", name))?;
         loaded.remove(pos);
         tracing::info!("Plugin unloaded: {}", name);
@@ -76,7 +79,10 @@ impl PluginHost {
 
     pub fn list(&self) -> Vec<(String, String)> {
         let loaded = self.loaded.lock().unwrap();
-        loaded.iter().map(|p| (p.name.clone(), p.version.clone())).collect()
+        loaded
+            .iter()
+            .map(|p| (p.name.clone(), p.version.clone()))
+            .collect()
     }
 
     pub fn is_loaded(&self, name: &str) -> bool {

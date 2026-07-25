@@ -1,15 +1,39 @@
-use std::time::Duration;
 use std::fmt;
+use std::time::Duration;
 
 #[derive(Debug, Clone)]
 pub enum TransportConfig {
-    Serial { path: String, baud: u32, parity: Option<String>, stop_bits: Option<u8> },
-    Tcp { host: String, port: u16 },
-    Udp { host: String, port: u16, multicast: Option<String> },
-    WebSocket { url: String },
-    Ble { mac: String, service_uuid: Option<String> },
-    Usb { vid: u16, pid: u16, interface: Option<u8> },
-    Mock { latency_ms: u64, packet_loss: f64 },
+    Serial {
+        path: String,
+        baud: u32,
+        parity: Option<String>,
+        stop_bits: Option<u8>,
+    },
+    Tcp {
+        host: String,
+        port: u16,
+    },
+    Udp {
+        host: String,
+        port: u16,
+        multicast: Option<String>,
+    },
+    WebSocket {
+        url: String,
+    },
+    Ble {
+        mac: String,
+        service_uuid: Option<String>,
+    },
+    Usb {
+        vid: u16,
+        pid: u16,
+        interface: Option<u8>,
+    },
+    Mock {
+        latency_ms: u64,
+        packet_loss: f64,
+    },
 }
 
 impl fmt::Display for TransportConfig {
@@ -56,12 +80,17 @@ pub trait TransportConnection: Send + Sync + fmt::Debug {
     fn close(&self) -> Result<(), TransportError>;
     fn is_open(&self) -> bool;
     fn set_timeout(&self, timeout: Duration) -> Result<(), TransportError>;
-    fn peer_addr(&self) -> Option<String> { None }
-    fn as_any(&self) -> Option<&dyn std::any::Any> { None }
+    fn peer_addr(&self) -> Option<String> {
+        None
+    }
+    fn as_any(&self) -> Option<&dyn std::any::Any> {
+        None
+    }
 }
 
 pub trait Transport: Send + Sync + fmt::Debug {
-    fn open(&self, config: TransportConfig) -> Result<Box<dyn TransportConnection>, TransportError>;
+    fn open(&self, config: TransportConfig)
+        -> Result<Box<dyn TransportConnection>, TransportError>;
     fn name(&self) -> &'static str;
     fn is_available(&self) -> bool;
 }

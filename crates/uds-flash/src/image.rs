@@ -1,4 +1,4 @@
-use sha2::{Sha256, Digest};
+use sha2::{Digest, Sha256};
 use std::path::Path;
 
 #[derive(Debug, Clone)]
@@ -11,7 +11,11 @@ pub struct FirmwareImage {
 impl FirmwareImage {
     pub fn new(data: Vec<u8>) -> Self {
         let hash = Sha256::digest(&data);
-        Self { data, checksum: hash.into(), path: None }
+        Self {
+            data,
+            checksum: hash.into(),
+            path: None,
+        }
     }
 
     pub fn from_file(path: &str) -> Result<Self, String> {

@@ -11,13 +11,25 @@ pub trait FileSystem {
 pub struct FsOperations;
 
 impl FsOperations {
-    pub fn new() -> Self { Self }
+    pub fn new() -> Self {
+        Self
+    }
 }
 
 impl FileSystem for FsOperations {
-    fn list_dir(&self, _path: &str) -> Result<Vec<String>, FsError> { Ok(vec![]) }
-    fn read_file(&self, _path: &str) -> Result<Vec<u8>, FsError> { Ok(vec![]) }
-    fn write_file(&self, _path: &str, _data: &[u8]) -> Result<(), FsError> { Ok(()) }
-    fn remove(&self, _path: &str) -> Result<(), FsError> { Ok(()) }
-    fn create_dir(&self, _path: &str) -> Result<(), FsError> { Ok(()) }
+    fn list_dir(&self, _path: &str) -> Result<Vec<String>, FsError> {
+        Ok(vec![])
+    }
+    fn read_file(&self, _path: &str) -> Result<Vec<u8>, FsError> {
+        Ok(vec![])
+    }
+    fn write_file(&self, _path: &str, _data: &[u8]) -> Result<(), FsError> {
+        Ok(())
+    }
+    fn remove(&self, _path: &str) -> Result<(), FsError> {
+        Ok(())
+    }
+    fn create_dir(&self, _path: &str) -> Result<(), FsError> {
+        Ok(())
+    }
 }

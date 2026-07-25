@@ -3,7 +3,9 @@ use crate::idl::IdlAst;
 pub struct SchemaGenerator;
 
 impl SchemaGenerator {
-    pub fn new() -> Self { Self }
+    pub fn new() -> Self {
+        Self
+    }
 
     pub fn generate_protobuf(&self, ast: &IdlAst) -> String {
         let mut out = String::from("syntax = \"proto3\";\n\npackage uds.v1;\n\n");
@@ -18,8 +20,10 @@ impl SchemaGenerator {
         for svc in &ast.services {
             out.push_str(&format!("service {} {{\n", svc.name));
             for method in &svc.methods {
-                out.push_str(&format!("  rpc {}({}) returns ({});\n",
-                    method.name, method.params_type, method.return_type));
+                out.push_str(&format!(
+                    "  rpc {}({}) returns ({});\n",
+                    method.name, method.params_type, method.return_type
+                ));
             }
             out.push_str("}\n\n");
         }

@@ -1,7 +1,10 @@
-use std::sync::{Arc, Mutex, atomic::{AtomicBool, Ordering}};
-use std::time::Duration;
+use crate::traits::{Transport, TransportConfig, TransportConnection, TransportError};
 use std::fmt;
-use crate::traits::{Transport, TransportConnection, TransportConfig, TransportError};
+use std::sync::{
+    atomic::{AtomicBool, Ordering},
+    Arc, Mutex,
+};
+use std::time::Duration;
 
 #[derive(Clone)]
 struct MockBuffer {
@@ -38,8 +41,14 @@ impl MockConnection {
     pub fn new() -> Self {
         Self {
             inner: MockInner {
-                write_buf: Arc::new(Mutex::new(MockBuffer { data: Vec::new(), pos: 0 })),
-                read_buf: Arc::new(Mutex::new(MockBuffer { data: Vec::new(), pos: 0 })),
+                write_buf: Arc::new(Mutex::new(MockBuffer {
+                    data: Vec::new(),
+                    pos: 0,
+                })),
+                read_buf: Arc::new(Mutex::new(MockBuffer {
+                    data: Vec::new(),
+                    pos: 0,
+                })),
                 open: Arc::new(AtomicBool::new(true)),
                 timeout: Arc::new(Mutex::new(Duration::from_secs(5))),
                 latency_ms: 0,
@@ -78,7 +87,11 @@ impl TransportConnection for MockConnection {
         }
         if self.inner.packet_loss > 0.0 {
             use std::time::{SystemTime, UNIX_EPOCH};
-            let seed = SystemTime::now().duration_since(UNIX_EPOCH).unwrap().subsec_nanos() as f64 / 1_000_000_000.0;
+            let seed = SystemTime::now()
+                .duration_since(UNIX_EPOCH)
+                .unwrap()
+                .subsec_nanos() as f64
+                / 1_000_000_000.0;
             if seed < self.inner.packet_loss {
                 return Ok(buf.len());
             }
@@ -121,28 +134,43 @@ impl TransportConnection for MockConnection {
         Ok(())
     }
 
-    fn as_any(&self) -> Option<&dyn std::any::Any> { Some(self) }
+    fn as_any(&self) -> Option<&dyn std::any::Any> {
+        Some(self)
+    }
 }
 
 #[derive(Debug)]
 pub struct MockTransport;
 
 impl MockTransport {
-    pub fn new() -> Self { Self }
+    pub fn new() -> Self {
+        Self
+    }
 }
 
 impl Transport for MockTransport {
-    fn open(&self, config: TransportConfig) -> Result<Box<dyn TransportConnection>, TransportError> {
+    fn open(
+        &self,
+        config: TransportConfig,
+    ) -> Result<Box<dyn TransportConnection>, TransportError> {
         let mut conn = MockConnection::new();
-        if let TransportConfig::Mock { latency_ms, packet_loss } = config {
+        if let TransportConfig::Mock {
+            latency_ms,
+            packet_loss,
+        } = config
+        {
             conn.inner.latency_ms = latency_ms;
             conn.inner.packet_loss = packet_loss;
         }
         Ok(Box::new(conn))
     }
 
-    fn name(&self) -> &'static str { "mock" }
-    fn is_available(&self) -> bool { true }
+    fn name(&self) -> &'static str {
+        "mock"
+    }
+    fn is_available(&self) -> bool {
+        true
+    }
 }
 
 #[cfg(test)]
@@ -152,7 +180,12 @@ mod tests {
     #[test]
     fn test_mock_send_recv() {
         let transport = MockTransport::new();
-        let conn = transport.open(TransportConfig::Mock { latency_ms: 0, packet_loss: 0.0 }).unwrap();
+        let conn = transport
+            .open(TransportConfig::Mock {
+                latency_ms: 0,
+                packet_loss: 0.0,
+            })
+            .unwrap();
         conn.send(b"hello").unwrap();
         let mc = conn.as_any().downcast_ref::<MockConnection>().unwrap();
         let written = mc.drain_written();
@@ -162,12 +195,15 @@ mod tests {
     #[test]
     fn test_mock_close() {
         let transport = MockTransport::new();
-        let conn = transport.open(TransportConfig::Mock { latency_ms: 0, packet_loss: 0.0 }).unwrap();
+        let conn = transport
+            .open(TransportConfig::Mock {
+                latency_ms: 0,
+                packet_loss: 0.0,
+            })
+            .unwrap();
         assert!(conn.is_open());
         conn.close().unwrap();
         assert!(!conn.is_open());
         assert!(conn.send(b"x").is_err());
     }
 }
-
-

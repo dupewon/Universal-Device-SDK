@@ -1,11 +1,15 @@
-use sha2::{Sha256, Digest};
+use sha2::{Digest, Sha256};
 
 const MAX_FIRMWARE_SIZE: usize = 1024 * 1024;
 const CHUNK_SIZE: usize = 256;
 
 enum OtaState {
     Idle,
-    Receiving { offset: u32, expected_size: u32, hash: Sha256 },
+    Receiving {
+        offset: u32,
+        expected_size: u32,
+        hash: Sha256,
+    },
     Complete,
 }
 
@@ -35,7 +39,11 @@ impl OtaClient {
 
     pub fn receive_chunk(&mut self, offset: u32, data: &[u8]) -> bool {
         match &mut self.state {
-            OtaState::Receiving { offset: expected_offset, expected_size, hash } => {
+            OtaState::Receiving {
+                offset: expected_offset,
+                expected_size,
+                hash,
+            } => {
                 if offset != *expected_offset {
                     return false;
                 }

@@ -21,7 +21,13 @@ impl DashboardServer {
         telemetry: uds_monitor::telemetry::TelemetryAggregator,
         capture: uds_monitor::capture::MonitorCapture,
     ) -> Self {
-        Self { addr, device_watch: Some(device_watch), log_ingester: Some(log_ingester), telemetry: Some(telemetry), capture: Some(capture) }
+        Self {
+            addr,
+            device_watch: Some(device_watch),
+            log_ingester: Some(log_ingester),
+            telemetry: Some(telemetry),
+            capture: Some(capture),
+        }
     }
 
     #[cfg(not(feature = "full"))]
@@ -32,8 +38,8 @@ impl DashboardServer {
     #[cfg(feature = "full")]
     pub async fn start(&self) -> Result<(), Box<dyn std::error::Error>> {
         use axum::Router;
-        use tower_http::cors::CorsLayer;
         use std::sync::Arc;
+        use tower_http::cors::CorsLayer;
 
         let state = Arc::new(super::routes::AppState {
             device_watch: self.device_watch.clone().unwrap(),
@@ -45,10 +51,19 @@ impl DashboardServer {
         let app = Router::new()
             .route("/", axum::routing::get(super::routes::index))
             .route("/api/health", axum::routing::get(super::routes::health))
-            .route("/api/devices", axum::routing::get(super::routes::list_devices))
-            .route("/api/devices/{id}", axum::routing::get(super::routes::get_device))
+            .route(
+                "/api/devices",
+                axum::routing::get(super::routes::list_devices),
+            )
+            .route(
+                "/api/devices/{id}",
+                axum::routing::get(super::routes::get_device),
+            )
             .route("/api/logs", axum::routing::get(super::routes::get_logs))
-            .route("/api/metrics", axum::routing::get(super::routes::get_metrics))
+            .route(
+                "/api/metrics",
+                axum::routing::get(super::routes::get_metrics),
+            )
             .route("/ws", axum::routing::get(super::ws::ws_handler))
             .layer(CorsLayer::permissive())
             .with_state(state);

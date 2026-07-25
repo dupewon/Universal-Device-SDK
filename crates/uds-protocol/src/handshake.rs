@@ -14,7 +14,13 @@ pub struct Handshake {
 
 impl Handshake {
     pub fn new(version_major: u8, version_minor: u8) -> Self {
-        Self { version_major, version_minor, capabilities: 0, device_id: None, device_name: None }
+        Self {
+            version_major,
+            version_minor,
+            capabilities: 0,
+            device_id: None,
+            device_name: None,
+        }
     }
 
     pub fn with_capabilities(mut self, caps: u32) -> Self {
@@ -71,21 +77,39 @@ impl Handshake {
         let id_len = data[pos] as usize;
         pos += 1;
         let device_id = if id_len > 0 {
-            if pos + id_len > data.len() { return Err(ProtocolError::FrameTooShort(data.len())); }
-            Some(String::from_utf8(data[pos..pos + id_len].to_vec())
-                .map_err(|_| ProtocolError::InvalidUtf8)?)
-        } else { None };
+            if pos + id_len > data.len() {
+                return Err(ProtocolError::FrameTooShort(data.len()));
+            }
+            Some(
+                String::from_utf8(data[pos..pos + id_len].to_vec())
+                    .map_err(|_| ProtocolError::InvalidUtf8)?,
+            )
+        } else {
+            None
+        };
         pos += id_len;
 
         let name_len = data[pos] as usize;
         pos += 1;
         let device_name = if name_len > 0 {
-            if pos + name_len > data.len() { return Err(ProtocolError::FrameTooShort(data.len())); }
-            Some(String::from_utf8(data[pos..pos + name_len].to_vec())
-                .map_err(|_| ProtocolError::InvalidUtf8)?)
-        } else { None };
+            if pos + name_len > data.len() {
+                return Err(ProtocolError::FrameTooShort(data.len()));
+            }
+            Some(
+                String::from_utf8(data[pos..pos + name_len].to_vec())
+                    .map_err(|_| ProtocolError::InvalidUtf8)?,
+            )
+        } else {
+            None
+        };
 
-        Ok(Self { version_major, version_minor, capabilities, device_id, device_name })
+        Ok(Self {
+            version_major,
+            version_minor,
+            capabilities,
+            device_id,
+            device_name,
+        })
     }
 
     pub fn negotiate(client: &Handshake, server: &Handshake) -> Result<u8, ProtocolError> {

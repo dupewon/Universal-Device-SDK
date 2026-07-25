@@ -4,7 +4,8 @@ pub struct ThroughputBenchmark;
 
 impl ThroughputBenchmark {
     pub fn measure<F>(size_bytes: usize, mut f: F) -> f64
-    where F: FnMut()
+    where
+        F: FnMut(),
     {
         let start = Instant::now();
         f();

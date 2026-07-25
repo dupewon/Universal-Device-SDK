@@ -1,4 +1,4 @@
-use bytes::{Bytes, BytesMut, BufMut};
+use bytes::{BufMut, Bytes, BytesMut};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum MessageType {
@@ -97,10 +97,14 @@ impl Message {
 
         let method = if data[pos] == 1 {
             pos += 1;
-            if pos + 2 > data.len() { return Err(crate::error::ProtocolError::FrameTooShort(data.len())); }
+            if pos + 2 > data.len() {
+                return Err(crate::error::ProtocolError::FrameTooShort(data.len()));
+            }
             let mlen = u16::from_le_bytes([data[pos], data[pos + 1]]) as usize;
             pos += 2;
-            if pos + mlen > data.len() { return Err(crate::error::ProtocolError::FrameTooShort(data.len())); }
+            if pos + mlen > data.len() {
+                return Err(crate::error::ProtocolError::FrameTooShort(data.len()));
+            }
             let m = String::from_utf8(data[pos..pos + mlen].to_vec())
                 .map_err(|_| crate::error::ProtocolError::InvalidUtf8)?;
             pos += mlen;
@@ -112,7 +116,9 @@ impl Message {
 
         let stream_id = if data[pos] == 1 {
             pos += 1;
-            if pos + 4 > data.len() { return Err(crate::error::ProtocolError::FrameTooShort(data.len())); }
+            if pos + 4 > data.len() {
+                return Err(crate::error::ProtocolError::FrameTooShort(data.len()));
+            }
             let id = u32::from_le_bytes([data[pos], data[pos + 1], data[pos + 2], data[pos + 3]]);
             pos += 4;
             Some(id)
@@ -123,7 +129,9 @@ impl Message {
 
         let status = if data[pos] == 1 {
             pos += 1;
-            if pos + 4 > data.len() { return Err(crate::error::ProtocolError::FrameTooShort(data.len())); }
+            if pos + 4 > data.len() {
+                return Err(crate::error::ProtocolError::FrameTooShort(data.len()));
+            }
             let s = u32::from_le_bytes([data[pos], data[pos + 1], data[pos + 2], data[pos + 3]]);
             pos += 4;
             Some(s)
@@ -134,10 +142,14 @@ impl Message {
 
         let error_msg = if data[pos] == 1 {
             pos += 1;
-            if pos + 2 > data.len() { return Err(crate::error::ProtocolError::FrameTooShort(data.len())); }
+            if pos + 2 > data.len() {
+                return Err(crate::error::ProtocolError::FrameTooShort(data.len()));
+            }
             let elen = u16::from_le_bytes([data[pos], data[pos + 1]]) as usize;
             pos += 2;
-            if pos + elen > data.len() { return Err(crate::error::ProtocolError::FrameTooShort(data.len())); }
+            if pos + elen > data.len() {
+                return Err(crate::error::ProtocolError::FrameTooShort(data.len()));
+            }
             let e = String::from_utf8(data[pos..pos + elen].to_vec())
                 .map_err(|_| crate::error::ProtocolError::InvalidUtf8)?;
             pos += elen;
@@ -150,7 +162,8 @@ impl Message {
         if pos + 4 > data.len() {
             return Err(crate::error::ProtocolError::FrameTooShort(data.len()));
         }
-        let plen = u32::from_le_bytes([data[pos], data[pos + 1], data[pos + 2], data[pos + 3]]) as usize;
+        let plen =
+            u32::from_le_bytes([data[pos], data[pos + 1], data[pos + 2], data[pos + 3]]) as usize;
         pos += 4;
         if pos + plen > data.len() {
             return Err(crate::error::ProtocolError::FrameTooShort(data.len()));
@@ -158,7 +171,15 @@ impl Message {
 
         let payload = Bytes::copy_from_slice(&data[pos..pos + plen]);
 
-        Ok(Self { msg_type, method, payload, stream_id, seq, status, error_msg })
+        Ok(Self {
+            msg_type,
+            method,
+            payload,
+            stream_id,
+            seq,
+            status,
+            error_msg,
+        })
     }
 }
 

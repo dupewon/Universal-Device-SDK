@@ -1,10 +1,10 @@
+use rand::Rng;
 use std::collections::HashMap;
 use std::sync::Mutex;
-use rand::Rng;
 
 pub struct PairingManager {
-    pending: Mutex<HashMap<String, String>>,  // device_id -> pin
-    paired: Mutex<HashMap<String, Vec<u8>>>,   // device_id -> shared_key
+    pending: Mutex<HashMap<String, String>>, // device_id -> pin
+    paired: Mutex<HashMap<String, Vec<u8>>>, // device_id -> shared_key
 }
 
 impl PairingManager {

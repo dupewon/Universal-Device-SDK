@@ -1,9 +1,9 @@
 pub mod client;
-pub mod server;
-pub mod message;
 pub mod error;
+pub mod message;
+pub mod server;
 
 pub use client::{RpcClient, RpcClientImpl};
-pub use server::{RpcServer, RpcServerImpl};
-pub use message::RpcMessage;
 pub use error::RpcError;
+pub use message::RpcMessage;
+pub use server::{RpcServer, RpcServerImpl};

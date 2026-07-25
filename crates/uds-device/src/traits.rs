@@ -1,6 +1,6 @@
-use uds_core::{DeviceId, DeviceInfo, DeviceStatus, DeviceCapabilitySet};
-use std::time::Duration;
 use std::fmt;
+use std::time::Duration;
+use uds_core::{DeviceCapabilitySet, DeviceId, DeviceInfo, DeviceStatus};
 
 #[derive(Debug, thiserror::Error)]
 pub enum DeviceError {

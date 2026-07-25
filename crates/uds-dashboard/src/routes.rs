@@ -42,13 +42,24 @@ pub async fn get_logs(
     axum::extract::State(state): axum::extract::State<Arc<AppState>>,
 ) -> axum::Json<Vec<serde_json::Value>> {
     use uds_logs::query::LogQuery;
-    let results = state.log_ingester.query(LogQuery { level: None, pattern: None, limit: Some(100) });
-    axum::Json(results.into_iter().map(|e| serde_json::json!({
-        "timestamp": e.timestamp,
-        "level": format!("{:?}", e.level),
-        "message": e.message,
-        "target": e.target
-    })).collect())
+    let results = state.log_ingester.query(LogQuery {
+        level: None,
+        pattern: None,
+        limit: Some(100),
+    });
+    axum::Json(
+        results
+            .into_iter()
+            .map(|e| {
+                serde_json::json!({
+                    "timestamp": e.timestamp,
+                    "level": format!("{:?}", e.level),
+                    "message": e.message,
+                    "target": e.target
+                })
+            })
+            .collect(),
+    )
 }
 
 #[cfg(feature = "full")]

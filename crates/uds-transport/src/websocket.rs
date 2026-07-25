@@ -1,7 +1,10 @@
-use std::sync::{Arc, atomic::{AtomicBool, Ordering}};
-use std::time::Duration;
+use crate::traits::{Transport, TransportConfig, TransportConnection, TransportError};
 use std::fmt;
-use crate::traits::{Transport, TransportConnection, TransportConfig, TransportError};
+use std::sync::{
+    atomic::{AtomicBool, Ordering},
+    Arc,
+};
+use std::time::Duration;
 
 struct WsInner {
     open: AtomicBool,
@@ -25,17 +28,24 @@ pub struct WebSocketConnection {
 pub struct WebSocketTransport;
 
 impl WebSocketTransport {
-    pub fn new() -> Self { Self }
+    pub fn new() -> Self {
+        Self
+    }
 }
 
 impl Transport for WebSocketTransport {
-    fn open(&self, config: TransportConfig) -> Result<Box<dyn TransportConnection>, TransportError> {
+    fn open(
+        &self,
+        config: TransportConfig,
+    ) -> Result<Box<dyn TransportConnection>, TransportError> {
         match config {
             TransportConfig::WebSocket { url } => {
                 tracing::info!("WebSocket transport configured for {}", url);
                 tracing::warn!("WebSocket transport requires tokio-tungstenite feature at runtime");
                 Ok(Box::new(WebSocketConnection {
-                    inner: Arc::new(WsInner { open: AtomicBool::new(true) }),
+                    inner: Arc::new(WsInner {
+                        open: AtomicBool::new(true),
+                    }),
                     url,
                 }))
             }
@@ -43,7 +53,9 @@ impl Transport for WebSocketTransport {
         }
     }
 
-    fn name(&self) -> &'static str { "websocket" }
+    fn name(&self) -> &'static str {
+        "websocket"
+    }
     fn is_available(&self) -> bool {
         cfg!(feature = "websocket")
     }
@@ -70,7 +82,11 @@ impl TransportConnection for WebSocketConnection {
         Ok(())
     }
 
-    fn is_open(&self) -> bool { self.inner.open.load(Ordering::Relaxed) }
+    fn is_open(&self) -> bool {
+        self.inner.open.load(Ordering::Relaxed)
+    }
 
-    fn set_timeout(&self, _timeout: Duration) -> Result<(), TransportError> { Ok(()) }
+    fn set_timeout(&self, _timeout: Duration) -> Result<(), TransportError> {
+        Ok(())
+    }
 }

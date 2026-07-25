@@ -1,8 +1,13 @@
+use indicatif::{ProgressBar, ProgressStyle};
 use std::path::Path;
 use std::time::Duration;
-use indicatif::{ProgressBar, ProgressStyle};
 
-pub fn run_flash(firmware: &str, verify: bool, _ota: bool, _partition: Option<&str>) -> anyhow::Result<()> {
+pub fn run_flash(
+    firmware: &str,
+    verify: bool,
+    _ota: bool,
+    _partition: Option<&str>,
+) -> anyhow::Result<()> {
     let path = Path::new(firmware);
     if !path.exists() {
         anyhow::bail!("Firmware file not found: {}", firmware);
@@ -11,7 +16,12 @@ pub fn run_flash(firmware: &str, verify: bool, _ota: bool, _partition: Option<&s
     let data = std::fs::read(path)?;
     let size_mb = data.len() as f64 / (1024.0 * 1024.0);
 
-    println!("Firmware: {} ({:.2} MB, {} bytes)", firmware, size_mb, data.len());
+    println!(
+        "Firmware: {} ({:.2} MB, {} bytes)",
+        firmware,
+        size_mb,
+        data.len()
+    );
     println!("Target:  ESP32 (auto-detected)");
     println!("Port:    /dev/ttyUSB0 (auto-detected)\n");
 
@@ -31,7 +41,7 @@ pub fn run_flash(firmware: &str, verify: bool, _ota: bool, _partition: Option<&s
 
     if verify {
         println!("\nVerifying image integrity...");
-        use sha2::{Sha256, Digest};
+        use sha2::{Digest, Sha256};
         let hash = Sha256::digest(&data);
         println!("  SHA256: {:x}", hash);
         println!("  Verification: OK");

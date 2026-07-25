@@ -5,10 +5,15 @@ pub struct LatencyBenchmark {
 }
 
 impl LatencyBenchmark {
-    pub fn new() -> Self { Self { samples: Vec::new() } }
+    pub fn new() -> Self {
+        Self {
+            samples: Vec::new(),
+        }
+    }
 
     pub fn measure<F>(&mut self, mut f: F) -> Duration
-    where F: FnMut()
+    where
+        F: FnMut(),
     {
         let start = Instant::now();
         f();

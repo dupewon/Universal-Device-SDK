@@ -15,7 +15,8 @@ pub fn run_benchmark(kind: &str) -> anyhow::Result<()> {
                 println!("  Sample {:>2}: {:>7}µs", i + 1, elapsed.as_micros());
             }
             samples.sort();
-            let avg: std::time::Duration = samples.iter().sum::<std::time::Duration>() / samples.len() as u32;
+            let avg: std::time::Duration =
+                samples.iter().sum::<std::time::Duration>() / samples.len() as u32;
             println!();
             println!("  Min:     {:>7}µs", samples[0].as_micros());
             println!("  Max:     {:>7}µs", samples[samples.len() - 1].as_micros());
@@ -41,7 +42,10 @@ pub fn run_benchmark(kind: &str) -> anyhow::Result<()> {
             println!("  Time:     {:.2} ms", elapsed.as_secs_f64() * 1000.0);
             println!("  Throughput: {:.2} MB/s", throughput);
         }
-        _ => anyhow::bail!("Unknown benchmark type: {}. Use: latency, throughput, all", kind),
+        _ => anyhow::bail!(
+            "Unknown benchmark type: {}. Use: latency, throughput, all",
+            kind
+        ),
     }
 
     Ok(())

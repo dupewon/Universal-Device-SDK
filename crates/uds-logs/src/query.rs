@@ -9,7 +9,11 @@ pub struct LogQuery {
 
 impl LogQuery {
     pub fn new() -> Self {
-        Self { level: None, pattern: None, limit: None }
+        Self {
+            level: None,
+            pattern: None,
+            limit: None,
+        }
     }
 
     pub fn with_level(mut self, level: LogLevel) -> Self {
@@ -30,7 +34,11 @@ impl LogQuery {
     pub fn execute(&self, entries: Vec<LogEntry>) -> Vec<LogEntry> {
         let filtered = entries.into_iter().filter(|e| {
             let level_ok = self.level.map(|l| e.level == l).unwrap_or(true);
-            let pattern_ok = self.pattern.as_ref().map(|p| e.message.contains(p)).unwrap_or(true);
+            let pattern_ok = self
+                .pattern
+                .as_ref()
+                .map(|p| e.message.contains(p))
+                .unwrap_or(true);
             level_ok && pattern_ok
         });
         match self.limit {

@@ -6,7 +6,11 @@ pub struct UdsCli {
     #[arg(long, help = "Config file path", default_value = "~/.uds/config.toml")]
     pub config: String,
 
-    #[arg(long, help = "Log level [error, warn, info, debug, trace]", default_value = "info")]
+    #[arg(
+        long,
+        help = "Log level [error, warn, info, debug, trace]",
+        default_value = "info"
+    )]
     pub log_level: String,
 
     #[arg(long, help = "Output format [human, json]", default_value = "human")]
@@ -83,7 +87,11 @@ pub enum UdsCommand {
 
     /// Run performance benchmarks on connected device
     Benchmark {
-        #[arg(long, help = "Type of benchmark [latency, throughput, all]", default_value = "all")]
+        #[arg(
+            long,
+            help = "Type of benchmark [latency, throughput, all]",
+            default_value = "all"
+        )]
         kind: String,
     },
 

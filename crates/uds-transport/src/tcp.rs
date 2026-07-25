@@ -1,9 +1,12 @@
-use std::sync::{Arc, Mutex, atomic::{AtomicBool, Ordering}};
-use std::time::Duration;
-use std::net::TcpStream as StdTcpStream;
-use std::io::{Read, Write};
+use crate::traits::{Transport, TransportConfig, TransportConnection, TransportError};
 use std::fmt;
-use crate::traits::{Transport, TransportConnection, TransportConfig, TransportError};
+use std::io::{Read, Write};
+use std::net::TcpStream as StdTcpStream;
+use std::sync::{
+    atomic::{AtomicBool, Ordering},
+    Arc, Mutex,
+};
+use std::time::Duration;
 
 struct TcpInner {
     stream: Arc<Mutex<Option<StdTcpStream>>>,
@@ -28,9 +31,12 @@ impl TcpConnection {
     fn connect(host: &str, port: u16, timeout: Duration) -> Result<Self, TransportError> {
         let addr = format!("{}:{}", host, port);
         let stream = StdTcpStream::connect_timeout(
-            &addr.parse::<std::net::SocketAddr>().map_err(|e: std::net::AddrParseError| TransportError::Config(e.to_string()))?,
+            &addr
+                .parse::<std::net::SocketAddr>()
+                .map_err(|e: std::net::AddrParseError| TransportError::Config(e.to_string()))?,
             timeout,
-        ).map_err(|e| TransportError::ConnectionRefused(e.to_string()))?;
+        )
+        .map_err(|e| TransportError::ConnectionRefused(e.to_string()))?;
         stream.set_read_timeout(Some(timeout)).ok();
         stream.set_write_timeout(Some(timeout)).ok();
         let inner = Arc::new(TcpInner {
@@ -49,7 +55,9 @@ impl TransportConnection for TcpConnection {
         }
         let mut guard = self.inner.stream.lock().unwrap();
         let stream = guard.as_mut().ok_or(TransportError::NotConnected)?;
-        stream.write_all(buf).map_err(|e| TransportError::Io(e.to_string()))?;
+        stream
+            .write_all(buf)
+            .map_err(|e| TransportError::Io(e.to_string()))?;
         stream.flush().ok();
         Ok(buf.len())
     }
@@ -61,14 +69,18 @@ impl TransportConnection for TcpConnection {
         let mut guard = self.inner.stream.lock().unwrap();
         let stream = guard.as_mut().ok_or(TransportError::NotConnected)?;
         let n = stream.read(buf).map_err(|e| {
-            if e.kind() == std::io::ErrorKind::WouldBlock || e.kind() == std::io::ErrorKind::TimedOut {
+            if e.kind() == std::io::ErrorKind::WouldBlock
+                || e.kind() == std::io::ErrorKind::TimedOut
+            {
                 TransportError::Timeout(*self.inner.timeout.lock().unwrap())
             } else {
                 TransportError::Io(e.to_string())
             }
         })?;
         if n == 0 {
-            return Err(TransportError::ConnectionRefused("connection closed".into()));
+            return Err(TransportError::ConnectionRefused(
+                "connection closed".into(),
+            ));
         }
         Ok(n)
     }
@@ -99,7 +111,9 @@ impl TransportConnection for TcpConnection {
 
     fn peer_addr(&self) -> Option<String> {
         let guard = self.inner.stream.lock().unwrap();
-        guard.as_ref().and_then(|s| s.peer_addr().ok().map(|a| a.to_string()))
+        guard
+            .as_ref()
+            .and_then(|s| s.peer_addr().ok().map(|a| a.to_string()))
     }
 }
 
@@ -107,11 +121,16 @@ impl TransportConnection for TcpConnection {
 pub struct TcpTransport;
 
 impl TcpTransport {
-    pub fn new() -> Self { Self }
+    pub fn new() -> Self {
+        Self
+    }
 }
 
 impl Transport for TcpTransport {
-    fn open(&self, config: TransportConfig) -> Result<Box<dyn TransportConnection>, TransportError> {
+    fn open(
+        &self,
+        config: TransportConfig,
+    ) -> Result<Box<dyn TransportConnection>, TransportError> {
         match config {
             TransportConfig::Tcp { host, port } => {
                 let conn = TcpConnection::connect(&host, port, Duration::from_secs(10))?;
@@ -121,8 +140,12 @@ impl Transport for TcpTransport {
         }
     }
 
-    fn name(&self) -> &'static str { "tcp" }
-    fn is_available(&self) -> bool { true }
+    fn name(&self) -> &'static str {
+        "tcp"
+    }
+    fn is_available(&self) -> bool {
+        true
+    }
 }
 
 #[cfg(test)]

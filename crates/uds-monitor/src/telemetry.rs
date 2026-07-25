@@ -53,11 +53,14 @@ impl TelemetryAggregator {
             .duration_since(std::time::UNIX_EPOCH)
             .unwrap()
             .as_secs();
-        metrics.iter().map(|(k, v)| MetricSnapshot {
-            name: k.clone(),
-            value: *v,
-            timestamp: now,
-        }).collect()
+        metrics
+            .iter()
+            .map(|(k, v)| MetricSnapshot {
+                name: k.clone(),
+                value: *v,
+                timestamp: now,
+            })
+            .collect()
     }
 
     pub fn history(&self, name: &str) -> Vec<MetricSnapshot> {

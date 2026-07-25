@@ -1,7 +1,7 @@
-use bytes::{Bytes, BytesMut, BufMut};
 use crate::checksum::crc16_ccitt;
 use crate::error::ProtocolError;
 use crate::MAGIC_BYTES;
+use bytes::{BufMut, Bytes, BytesMut};
 
 pub const HEADER_SIZE: usize = 12;
 
@@ -24,11 +24,21 @@ pub struct Frame {
 }
 
 impl Frame {
-    pub fn new(version: u8, flags: u8, sequence: u16, payload: &[u8]) -> Result<Self, ProtocolError> {
+    pub fn new(
+        version: u8,
+        flags: u8,
+        sequence: u16,
+        payload: &[u8],
+    ) -> Result<Self, ProtocolError> {
         if payload.len() > crate::MAX_FRAME_PAYLOAD as usize {
             return Err(ProtocolError::PayloadTooLong(payload.len()));
         }
-        Ok(Self { version, flags, sequence, payload: Bytes::copy_from_slice(payload) })
+        Ok(Self {
+            version,
+            flags,
+            sequence,
+            payload: Bytes::copy_from_slice(payload),
+        })
     }
 
     pub fn encode(&self) -> Bytes {
@@ -71,20 +81,34 @@ impl Frame {
         if stored_checksum != 0 && (flags & FrameFlag::Encrypted as u8) == 0 {
             let computed = crc16_ccitt(&payload);
             if computed != stored_checksum {
-                return Err(ProtocolError::ChecksumMismatch { expected: stored_checksum, got: computed });
+                return Err(ProtocolError::ChecksumMismatch {
+                    expected: stored_checksum,
+                    got: computed,
+                });
             }
         }
 
-        Ok(Self { version, flags, sequence, payload })
+        Ok(Self {
+            version,
+            flags,
+            sequence,
+            payload,
+        })
     }
 
     pub fn has_flag(&self, flag: FrameFlag) -> bool {
         self.flags & flag as u8 != 0
     }
 
-    pub fn is_request(&self) -> bool { self.has_flag(FrameFlag::Request) }
-    pub fn is_response(&self) -> bool { self.has_flag(FrameFlag::Response) }
-    pub fn is_streaming(&self) -> bool { self.has_flag(FrameFlag::Streaming) }
+    pub fn is_request(&self) -> bool {
+        self.has_flag(FrameFlag::Request)
+    }
+    pub fn is_response(&self) -> bool {
+        self.has_flag(FrameFlag::Response)
+    }
+    pub fn is_streaming(&self) -> bool {
+        self.has_flag(FrameFlag::Streaming)
+    }
 }
 
 #[cfg(test)]

@@ -1,8 +1,11 @@
-use std::sync::{Arc, Mutex, atomic::{AtomicBool, Ordering}};
-use std::time::Duration;
-use std::net::UdpSocket as StdUdpSocket;
+use crate::traits::{Transport, TransportConfig, TransportConnection, TransportError};
 use std::fmt;
-use crate::traits::{Transport, TransportConnection, TransportConfig, TransportError};
+use std::net::UdpSocket as StdUdpSocket;
+use std::sync::{
+    atomic::{AtomicBool, Ordering},
+    Arc, Mutex,
+};
+use std::time::Duration;
 
 const MULTICAST_ADDR: &str = "239.255.0.123";
 const MULTICAST_PORT: u16 = 4567;
@@ -31,15 +34,21 @@ pub struct UdpConnection {
 impl UdpConnection {
     fn bind(host: &str, port: u16, multicast: Option<&str>) -> Result<Self, TransportError> {
         let bind_addr = format!("0.0.0.0:{}", port);
-        let socket = StdUdpSocket::bind(&bind_addr)
-            .map_err(|e| TransportError::Io(e.to_string()))?;
+        let socket =
+            StdUdpSocket::bind(&bind_addr).map_err(|e| TransportError::Io(e.to_string()))?;
         socket.set_read_timeout(Some(Duration::from_secs(5))).ok();
 
         if let Some(mc_addr) = multicast {
-            socket.join_multicast_v4(
-                &mc_addr.parse::<std::net::Ipv4Addr>().map_err(|e: std::net::AddrParseError| TransportError::Config(e.to_string()))?,
-                &"0.0.0.0".parse::<std::net::Ipv4Addr>().map_err(|e: std::net::AddrParseError| TransportError::Config(e.to_string()))?,
-            ).ok();
+            socket
+                .join_multicast_v4(
+                    &mc_addr.parse::<std::net::Ipv4Addr>().map_err(
+                        |e: std::net::AddrParseError| TransportError::Config(e.to_string()),
+                    )?,
+                    &"0.0.0.0".parse::<std::net::Ipv4Addr>().map_err(
+                        |e: std::net::AddrParseError| TransportError::Config(e.to_string()),
+                    )?,
+                )
+                .ok();
         }
 
         let target = format!("{}:{}", host, port);
@@ -61,7 +70,8 @@ impl TransportConnection for UdpConnection {
         }
         let guard = self.inner.socket.lock().unwrap();
         let socket = guard.as_ref().ok_or(TransportError::NotConnected)?;
-        socket.send_to(buf, &self.inner.target)
+        socket
+            .send_to(buf, &self.inner.target)
             .map_err(|e| TransportError::Io(e.to_string()))
     }
 
@@ -71,14 +81,15 @@ impl TransportConnection for UdpConnection {
         }
         let guard = self.inner.socket.lock().unwrap();
         let socket = guard.as_ref().ok_or(TransportError::NotConnected)?;
-        let (n, _src) = socket.recv_from(buf)
-            .map_err(|e| {
-                if e.kind() == std::io::ErrorKind::WouldBlock || e.kind() == std::io::ErrorKind::TimedOut {
-                    TransportError::Timeout(*self.inner.timeout.lock().unwrap())
-                } else {
-                    TransportError::Io(e.to_string())
-                }
-            })?;
+        let (n, _src) = socket.recv_from(buf).map_err(|e| {
+            if e.kind() == std::io::ErrorKind::WouldBlock
+                || e.kind() == std::io::ErrorKind::TimedOut
+            {
+                TransportError::Timeout(*self.inner.timeout.lock().unwrap())
+            } else {
+                TransportError::Io(e.to_string())
+            }
+        })?;
         Ok(n)
     }
 
@@ -89,7 +100,9 @@ impl TransportConnection for UdpConnection {
         Ok(())
     }
 
-    fn is_open(&self) -> bool { self.inner.open.load(Ordering::Relaxed) }
+    fn is_open(&self) -> bool {
+        self.inner.open.load(Ordering::Relaxed)
+    }
 
     fn set_timeout(&self, timeout: Duration) -> Result<(), TransportError> {
         let mut t = self.inner.timeout.lock().unwrap();
@@ -106,16 +119,23 @@ impl TransportConnection for UdpConnection {
 pub struct UdpTransport;
 
 impl UdpTransport {
-    pub fn new() -> Self { Self }
+    pub fn new() -> Self {
+        Self
+    }
 
     pub fn multicast_discovery(timeout: Duration) -> Result<Vec<String>, TransportError> {
-        let socket = StdUdpSocket::bind("0.0.0.0:0")
-            .map_err(|e| TransportError::Io(e.to_string()))?;
+        let socket =
+            StdUdpSocket::bind("0.0.0.0:0").map_err(|e| TransportError::Io(e.to_string()))?;
         socket.set_broadcast(true).ok();
         socket.set_read_timeout(Some(timeout)).ok();
 
         let discovery_msg = b"UDS_DISCOVER";
-        socket.send_to(discovery_msg, format!("{}:{}", MULTICAST_ADDR, MULTICAST_PORT)).ok();
+        socket
+            .send_to(
+                discovery_msg,
+                format!("{}:{}", MULTICAST_ADDR, MULTICAST_PORT),
+            )
+            .ok();
 
         let mut buf = vec![0u8; 1024];
         let mut devices = Vec::new();
@@ -133,9 +153,16 @@ impl UdpTransport {
 }
 
 impl Transport for UdpTransport {
-    fn open(&self, config: TransportConfig) -> Result<Box<dyn TransportConnection>, TransportError> {
+    fn open(
+        &self,
+        config: TransportConfig,
+    ) -> Result<Box<dyn TransportConnection>, TransportError> {
         match config {
-            TransportConfig::Udp { host, port, multicast } => {
+            TransportConfig::Udp {
+                host,
+                port,
+                multicast,
+            } => {
                 let conn = UdpConnection::bind(&host, port, multicast.as_deref())?;
                 Ok(Box::new(conn))
             }
@@ -143,6 +170,10 @@ impl Transport for UdpTransport {
         }
     }
 
-    fn name(&self) -> &'static str { "udp" }
-    fn is_available(&self) -> bool { true }
+    fn name(&self) -> &'static str {
+        "udp"
+    }
+    fn is_available(&self) -> bool {
+        true
+    }
 }

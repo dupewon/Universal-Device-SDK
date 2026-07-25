@@ -1,7 +1,9 @@
 use crate::traits::{Device, DeviceError};
-use uds_core::{DeviceId, DeviceInfo, DeviceStatus, DeviceCapabilitySet, TransportType, TransportHint,
-                HardwareCapabilities, FirmwareCapabilities, FeatureFlags};
 use std::fmt;
+use uds_core::{
+    DeviceCapabilitySet, DeviceId, DeviceInfo, DeviceStatus, FeatureFlags, FirmwareCapabilities,
+    HardwareCapabilities, TransportHint, TransportType,
+};
 
 #[derive(Debug)]
 pub struct Stm32Device {
@@ -37,9 +39,16 @@ impl Stm32Device {
                         supports_encryption: true,
                     },
                     features: FeatureFlags {
-                        ota: true, filesystem: true, logging: true, monitoring: true, benchmarking: false,
+                        ota: true,
+                        filesystem: true,
+                        logging: true,
+                        monitoring: true,
+                        benchmarking: false,
                     },
                 },
+                connected: false,
+                platform: "STM32".into(),
+                firmware_version: "0.1.0".into(),
             },
             status: DeviceStatus::Disconnected,
         }
@@ -56,10 +65,18 @@ impl Stm32Device {
 }
 
 impl Device for Stm32Device {
-    fn id(&self) -> &DeviceId { &self.id }
-    fn info(&self) -> &DeviceInfo { &self.info }
-    fn capabilities(&self) -> &DeviceCapabilitySet { &self.info.capabilities }
-    fn status(&self) -> DeviceStatus { self.status }
+    fn id(&self) -> &DeviceId {
+        &self.id
+    }
+    fn info(&self) -> &DeviceInfo {
+        &self.info
+    }
+    fn capabilities(&self) -> &DeviceCapabilitySet {
+        &self.info.capabilities
+    }
+    fn status(&self) -> DeviceStatus {
+        self.status
+    }
     fn connect(&self) -> Result<(), DeviceError> {
         tracing::info!("Connecting to STM32: {}", self.id.0);
         Ok(())
@@ -77,7 +94,12 @@ impl Device for Stm32Device {
         Ok(())
     }
     fn send_rpc(&self, method: &str, params: &[u8]) -> Result<Vec<u8>, DeviceError> {
-        tracing::debug!("RPC call on {}: {} ({} bytes)", self.id.0, method, params.len());
+        tracing::debug!(
+            "RPC call on {}: {} ({} bytes)",
+            self.id.0,
+            method,
+            params.len()
+        );
         Ok(b"ok".to_vec())
     }
 }

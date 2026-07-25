@@ -34,7 +34,9 @@ pub struct FieldDef {
 pub struct IdlParser;
 
 impl IdlParser {
-    pub fn new() -> Self { Self }
+    pub fn new() -> Self {
+        Self
+    }
 
     /// Parse a UDS IDL string into an AST.
     /// Format:
@@ -62,7 +64,8 @@ impl IdlParser {
                 if let Some(svc) = current_service.take() {
                     services.push(svc);
                 }
-                let name = line.trim_start_matches("service ")
+                let name = line
+                    .trim_start_matches("service ")
                     .trim_end_matches('{')
                     .trim()
                     .to_string();
@@ -81,7 +84,8 @@ impl IdlParser {
                 if let Some(msg) = current_message.take() {
                     messages.push(msg);
                 }
-                let name = line.trim_start_matches("message ")
+                let name = line
+                    .trim_start_matches("message ")
                     .trim_end_matches('{')
                     .trim()
                     .to_string();
@@ -127,7 +131,11 @@ impl IdlParser {
             }
 
             // Field definition
-            if !line.starts_with('{') && !line.starts_with('}') && line.contains(' ') && line.ends_with(';') {
+            if !line.starts_with('{')
+                && !line.starts_with('}')
+                && line.contains(' ')
+                && line.ends_with(';')
+            {
                 let field = line.trim_end_matches(';').trim();
                 if let Some((ft, fn_name)) = field.split_once(' ') {
                     let is_optional = ft.ends_with('?');

@@ -1,8 +1,8 @@
 pub mod latency;
-pub mod throughput;
-pub mod system;
 pub mod report;
+pub mod system;
+pub mod throughput;
 
 pub use latency::LatencyBenchmark;
-pub use throughput::ThroughputBenchmark;
 pub use report::BenchmarkReport;
+pub use throughput::ThroughputBenchmark;

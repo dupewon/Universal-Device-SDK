@@ -34,7 +34,10 @@ impl MonitorCapture {
     }
 
     pub fn feed(&self, level: &str, message: &str) {
-        let ts = SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs();
+        let ts = SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .unwrap()
+            .as_secs();
         let mut buf = self.buffer.lock().unwrap();
         buf.push(LogLine {
             timestamp: ts,

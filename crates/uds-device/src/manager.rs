@@ -1,19 +1,33 @@
-use std::collections::HashMap;
-use std::sync::{Arc, Mutex};
 use crate::traits::{Device, DeviceError, DeviceManager};
-use uds_core::{DeviceId, DeviceInfo, DeviceStatus};
+use std::collections::HashMap;
 use std::fmt;
+use std::sync::{Arc, Mutex};
+use uds_core::{DeviceId, DeviceInfo, DeviceStatus};
 
 struct DeviceWrapper(Arc<dyn Device>);
 
 impl Device for DeviceWrapper {
-    fn id(&self) -> &DeviceId { self.0.id() }
-    fn info(&self) -> &DeviceInfo { self.0.info() }
-    fn status(&self) -> DeviceStatus { self.0.status() }
-    fn connect(&self) -> Result<(), DeviceError> { self.0.connect() }
-    fn disconnect(&self) -> Result<(), DeviceError> { self.0.disconnect() }
-    fn send(&self, data: &[u8]) -> Result<(), DeviceError> { self.0.send(data) }
-    fn recv(&self, buf: &mut [u8]) -> Result<usize, DeviceError> { self.0.recv(buf) }
+    fn id(&self) -> &DeviceId {
+        self.0.id()
+    }
+    fn info(&self) -> &DeviceInfo {
+        self.0.info()
+    }
+    fn status(&self) -> DeviceStatus {
+        self.0.status()
+    }
+    fn connect(&self) -> Result<(), DeviceError> {
+        self.0.connect()
+    }
+    fn disconnect(&self) -> Result<(), DeviceError> {
+        self.0.disconnect()
+    }
+    fn send(&self, data: &[u8]) -> Result<(), DeviceError> {
+        self.0.send(data)
+    }
+    fn recv(&self, buf: &mut [u8]) -> Result<usize, DeviceError> {
+        self.0.recv(buf)
+    }
 }
 
 #[derive(Clone)]
@@ -36,7 +50,9 @@ pub struct DeviceManagerImpl {
 
 impl DeviceManagerImpl {
     pub fn new() -> Self {
-        Self { devices: Mutex::new(HashMap::new()) }
+        Self {
+            devices: Mutex::new(HashMap::new()),
+        }
     }
 }
 
@@ -44,7 +60,12 @@ impl DeviceManager for DeviceManagerImpl {
     fn register(&self, device: Box<dyn Device>) {
         let id = device.id().0.clone();
         let mut devices = self.devices.lock().unwrap();
-        devices.insert(id, DeviceEntry { device: device.into() });
+        devices.insert(
+            id,
+            DeviceEntry {
+                device: device.into(),
+            },
+        );
     }
 
     fn unregister(&self, id: &DeviceId) {
@@ -54,9 +75,9 @@ impl DeviceManager for DeviceManagerImpl {
 
     fn get(&self, id: &DeviceId) -> Option<Box<dyn Device>> {
         let devices = self.devices.lock().unwrap();
-        devices.get(&id.0).and_then(|entry| {
-            Some(Box::new(DeviceWrapper(Arc::clone(&entry.device))))
-        })
+        devices
+            .get(&id.0)
+            .and_then(|entry| Some(Box::new(DeviceWrapper(Arc::clone(&entry.device)))))
     }
 
     fn list(&self) -> Vec<DeviceInfo> {

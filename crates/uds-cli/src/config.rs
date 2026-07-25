@@ -1,5 +1,5 @@
-use uds_core::UdsConfig;
 use std::path::Path;
+use uds_core::UdsConfig;
 
 pub fn load_config(path: Option<&str>) -> UdsConfig {
     let config_path = path.unwrap_or("~/.uds/config.toml");

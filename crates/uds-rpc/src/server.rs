@@ -1,7 +1,7 @@
-use std::collections::HashMap;
-use std::sync::{Arc, Mutex};
 use crate::error::RpcError;
 use crate::message::RpcMessage;
+use std::collections::HashMap;
+use std::sync::{Arc, Mutex};
 
 type RpcHandler = Arc<dyn Fn(&[u8]) -> Result<Vec<u8>, RpcError> + Send + Sync>;
 
@@ -17,7 +17,9 @@ pub struct RpcServerImpl {
 
 impl RpcServerImpl {
     pub fn new() -> Self {
-        Self { methods: Mutex::new(HashMap::new()) }
+        Self {
+            methods: Mutex::new(HashMap::new()),
+        }
     }
 }
 
@@ -39,10 +41,12 @@ impl RpcServer for RpcServerImpl {
                 let result = h(&msg.payload)?;
                 Ok(RpcMessage::response(msg.seq, &result, 0, None))
             }
-            None => {
-                Ok(RpcMessage::response(msg.seq, &[], 1,
-                    Some(format!("method '{}' not found", method_name))))
-            }
+            None => Ok(RpcMessage::response(
+                msg.seq,
+                &[],
+                1,
+                Some(format!("method '{}' not found", method_name)),
+            )),
         }
     }
 
@@ -61,9 +65,7 @@ mod tests {
     #[test]
     fn test_register_and_call() {
         let server = RpcServerImpl::new();
-        let handler: RpcHandler = Arc::new(|params| {
-            Ok(format!("echo: {:?}", params).into_bytes())
-        });
+        let handler: RpcHandler = Arc::new(|params| Ok(format!("echo: {:?}", params).into_bytes()));
         server.register_method("Echo", handler);
 
         let methods = server.list_methods();

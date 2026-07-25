@@ -1,11 +1,11 @@
-pub mod partition;
 pub mod image;
 pub mod ota;
-pub mod verifier;
+pub mod partition;
 pub mod progress;
+pub mod verifier;
 
-pub use partition::PartitionManager;
 pub use image::FirmwareImage;
 pub use ota::OtaUpdater;
+pub use partition::PartitionManager;
+pub use progress::{ConsoleProgress, ProgressReporter};
 pub use verifier::ImageVerifier;
-pub use progress::{ProgressReporter, ConsoleProgress};

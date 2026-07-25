@@ -1,7 +1,10 @@
-use std::sync::{Arc, Mutex, atomic::{AtomicBool, Ordering}};
-use std::time::Duration;
+use crate::traits::{Transport, TransportConfig, TransportConnection, TransportError};
 use std::fmt;
-use crate::traits::{Transport, TransportConnection, TransportConfig, TransportError};
+use std::sync::{
+    atomic::{AtomicBool, Ordering},
+    Arc, Mutex,
+};
+use std::time::Duration;
 
 struct SerialInner {
     port_name: String,
@@ -46,7 +49,12 @@ impl TransportConnection for SerialConnection {
         if !self.inner.open.load(Ordering::Relaxed) {
             return Err(TransportError::NotConnected);
         }
-        tracing::debug!("Serial send {} bytes to {} ({} baud)", buf.len(), self.inner.port_name, self.inner.baud);
+        tracing::debug!(
+            "Serial send {} bytes to {} ({} baud)",
+            buf.len(),
+            self.inner.port_name,
+            self.inner.baud
+        );
         Ok(buf.len())
     }
 
@@ -80,7 +88,9 @@ impl TransportConnection for SerialConnection {
 pub struct SerialTransport;
 
 impl SerialTransport {
-    pub fn new() -> Self { Self }
+    pub fn new() -> Self {
+        Self
+    }
 
     pub fn available_ports() -> Vec<String> {
         let mut ports = Vec::new();
@@ -99,7 +109,10 @@ impl SerialTransport {
             if let Ok(entries) = std::fs::read_dir("/dev") {
                 for entry in entries.flatten() {
                     let name = entry.file_name().to_string_lossy().to_string();
-                    if name.starts_with("ttyUSB") || name.starts_with("ttyACM") || name.starts_with("ttyS") {
+                    if name.starts_with("ttyUSB")
+                        || name.starts_with("ttyACM")
+                        || name.starts_with("ttyS")
+                    {
                         ports.push(format!("/dev/{}", name));
                     }
                 }
@@ -110,7 +123,10 @@ impl SerialTransport {
 }
 
 impl Transport for SerialTransport {
-    fn open(&self, config: TransportConfig) -> Result<Box<dyn TransportConnection>, TransportError> {
+    fn open(
+        &self,
+        config: TransportConfig,
+    ) -> Result<Box<dyn TransportConnection>, TransportError> {
         match config {
             TransportConfig::Serial { path, baud, .. } => {
                 let conn = SerialConnection::open(&path, baud)?;
@@ -121,6 +137,10 @@ impl Transport for SerialTransport {
         }
     }
 
-    fn name(&self) -> &'static str { "serial" }
-    fn is_available(&self) -> bool { true }
+    fn name(&self) -> &'static str {
+        "serial"
+    }
+    fn is_available(&self) -> bool {
+        true
+    }
 }

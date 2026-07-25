@@ -1,7 +1,7 @@
 pub mod client;
-pub mod transport;
-pub mod ota;
 pub mod logging;
+pub mod ota;
+pub mod transport;
 
 pub use client::UdsClient;
-pub use transport::{TransportAdapter, FirmwareTransport};
+pub use transport::{FirmwareTransport, TransportAdapter};

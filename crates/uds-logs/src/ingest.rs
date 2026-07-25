@@ -16,7 +16,9 @@ pub struct LogIngester {
 
 impl LogIngester {
     pub fn new() -> Self {
-        Self { buffer: Arc::new(Mutex::new(Vec::new())) }
+        Self {
+            buffer: Arc::new(Mutex::new(Vec::new())),
+        }
     }
 
     pub fn push(&self, entry: LogEntry) {

@@ -48,7 +48,10 @@ pub fn run_generate(input: &str, lang: Option<&str>, output: Option<&str>) -> an
             std::fs::write(&out_path, go)?;
             println!("\n  Generated: {}", out_path.display());
         }
-        _ => anyhow::bail!("Unsupported language: {}. Supported: rust, python, c, cpp, ts, go", lang),
+        _ => anyhow::bail!(
+            "Unsupported language: {}. Supported: rust, python, c, cpp, ts, go",
+            lang
+        ),
     }
 
     println!("\nCode generation complete.");
