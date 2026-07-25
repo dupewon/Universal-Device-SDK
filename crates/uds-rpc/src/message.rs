@@ -51,13 +51,13 @@ impl RpcMessage {
     pub fn encode(&self) -> Vec<u8> {
         let mut buf = BytesMut::new();
         buf.put_u8(self.msg_type);
-        buf.put_u16(self.seq);
+        buf.put_u16_le(self.seq);
 
         match &self.method {
             Some(m) => {
                 buf.put_u8(1);
                 let mb = m.as_bytes();
-                buf.put_u16(mb.len() as u16);
+                buf.put_u16_le(mb.len() as u16);
                 buf.put_slice(mb);
             }
             None => buf.put_u8(0),
@@ -66,7 +66,7 @@ impl RpcMessage {
         match self.stream_id {
             Some(id) => {
                 buf.put_u8(1);
-                buf.put_u32(id);
+                buf.put_u32_le(id);
             }
             None => buf.put_u8(0),
         }
@@ -74,7 +74,7 @@ impl RpcMessage {
         match self.status {
             Some(s) => {
                 buf.put_u8(1);
-                buf.put_u32(s);
+                buf.put_u32_le(s);
             }
             None => buf.put_u8(0),
         }
@@ -83,13 +83,13 @@ impl RpcMessage {
             Some(e) => {
                 buf.put_u8(1);
                 let eb = e.as_bytes();
-                buf.put_u16(eb.len() as u16);
+                buf.put_u16_le(eb.len() as u16);
                 buf.put_slice(eb);
             }
             None => buf.put_u8(0),
         }
 
-        buf.put_u32(self.payload.len() as u32);
+        buf.put_u32_le(self.payload.len() as u32);
         buf.put_slice(&self.payload);
         buf.freeze().to_vec()
     }

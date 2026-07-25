@@ -1,19 +1,21 @@
 const CRC16_CCITT_TABLE: [u16; 256] = {
     let mut table = [0u16; 256];
-    let mut i = 0;
-    while i < 256 {
-        let mut crc = (i as u16) << 8;
+    let mut i = 0u16;
+    loop {
+        let mut crc = i << 8;
         let mut j = 0;
-        while j < 8 {
+        loop {
             if crc & 0x8000 != 0 {
                 crc = (crc << 1) ^ 0x1021;
             } else {
                 crc <<= 1;
             }
             j += 1;
+            if j == 8 { break; }
         }
-        table[i] = crc;
+        table[i as usize] = crc;
         i += 1;
+        if i == 256 { break; }
     }
     table
 };
@@ -24,7 +26,7 @@ pub fn crc16_ccitt(data: &[u8]) -> u16 {
         let idx = ((crc >> 8) ^ byte as u16) & 0xFF;
         crc = (crc << 8) ^ CRC16_CCITT_TABLE[idx as usize];
     }
-    crc ^ 0xFFFF
+    crc
 }
 
 #[cfg(test)]
@@ -34,7 +36,7 @@ mod tests {
     #[test]
     fn test_crc16_known() {
         let crc = crc16_ccitt(b"123456789");
-        assert_eq!(crc, 0x2189);
+        assert_eq!(crc, 0x29B1);
     }
 
     #[test]

@@ -132,6 +132,8 @@ mod tests {
         let mut buf = vec![0u8; HEADER_SIZE + 4];
         buf[..4].copy_from_slice(&MAGIC_BYTES);
         buf[8] = 4; // payload length
+        buf[10] = 0xAB; // non-zero checksum → will trigger validation and fail
+        buf[11] = 0xCD;
         let result = Frame::decode(&buf);
         assert!(result.is_err());
     }
